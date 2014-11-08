@@ -1,0 +1,11 @@
+I'm realizing that it's kind of complicated/scary to use git for the first
+time, so here are a few useful links:
+
+To get started: (There's apparently a windows client)
+https://help.github.com/articles/set-up-git/
+
+A lab from last year's UNIX lab, take a look at Lab 7, checkpoint 4 on
+http://teaching.up.edu/cs376/labs/CS376_Lab6.pdf
+http://teaching.up.edu/cs376/labs/CS376_Lab7.pdf
+
+I'll upload a few more things as I find them
