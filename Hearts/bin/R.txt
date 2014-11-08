@@ -425,7 +425,7 @@ int layout game_local_tab 0x7f03001b
 int layout game_no_gui 0x7f03001c
 int layout game_player_list_row 0x7f03001d
 int layout game_remote_tab 0x7f03001e
-int layout sj_human_player 0x7f03001f
+int layout hearts_human_player 0x7f03001f
 int layout support_simple_spinner_dropdown_item 0x7f030020
 int menu game_main 0x7f0c0000
 int menu hearts_main 0x7f0c0001
@@ -462,7 +462,6 @@ int string save_config_as_default 0x7f0a001a
 int string server_ip_code 0x7f0a0014
 int string start_the_game 0x7f0a001b
 int string title_activity_game_main 0x7f0a0010
-int style AppBaseTheme 0x7f0b008c
 int style AppTheme 0x7f0b008b
 int style TextAppearance_AppCompat_Base_CompactMenu_Dialog 0x7f0b0063
 int style TextAppearance_AppCompat_Base_SearchResult 0x7f0b006d
