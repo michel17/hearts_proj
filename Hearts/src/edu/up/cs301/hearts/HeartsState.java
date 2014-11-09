@@ -46,7 +46,12 @@ public class HeartsState extends GameState {
 	}
 	
 	public int getOverallScore(int idx) {
-		return overallScores[idx];
+		if(idx < NUM_PLAYERS){
+			return overallScores[idx];
+		}
+		else{
+			return 0;
+		}
 	}
 	
 	public int getHandScore(int idx) {
@@ -54,6 +59,23 @@ public class HeartsState extends GameState {
 	}
 	public boolean isHeartsBroken() {
 		return heartsBroken;
+	}
+	public int getNumPlayers() {
+		return NUM_PLAYERS;
+	}
+	public void setSubstate(int i){
+		// TODO FIX THIS ISH
+		return;
+	}
+	
+	public void setTurnIdx(int i){
+		if(i == -1){
+			turnIdx++;
+			turnIdx = turnIdx % 4;
+		}
+		else if(i < 4){
+			turnIdx = i;
+		}
 	}
 
 }
