@@ -15,5 +15,14 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	protected void timerTicked() {
+		if(game != null && game instanceof HeartsLocalGame){
+			
+			if(((HeartsLocalGame)game).canMove(playerNum)){
+				//Make a move
+			}
+		}
+	}
 
 }
