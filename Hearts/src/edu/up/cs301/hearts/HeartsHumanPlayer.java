@@ -40,7 +40,6 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	public HeartsHumanPlayer(String name) {
 		super(name);
 		backgroundColor = 0xff006400;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -71,7 +70,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
 	@Override
 	public void receiveInfo(GameInfo info) {
-		Log.i("SJComputerPlayer", "receiving updated state ("+info.getClass()+")");
+		Log.i("HeartsHumanPlayer", "receiving updated state ("+info.getClass()+")");
 		if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {
 			// if we had an out-of-turn or illegal move, flash the screen
 			surface.flash(Color.RED, 50);
@@ -111,7 +110,6 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
 	@Override
 	public void tick(Canvas canvas) {
-		// TODO Auto-generated method stub
 		
 	}
 
