@@ -17,18 +17,18 @@ public class HeartsMainActivity extends GameMainActivity {
 		// Define the allowed player types
 		ArrayList<GamePlayerType> playerTypes = new ArrayList<GamePlayerType>();
 
-		playerTypes.add(new GamePlayerType("human player") {
+		playerTypes.add(new GamePlayerType("Human Player") {
 			public GamePlayer createPlayer(String name) {
 				return new HeartsHumanPlayer(name);
 			}
 		});
-		// Create a game configuration class for SlapJack
+		// Create a game configuration class for Hearts
 		GameConfig defaultConfig = new GameConfig(playerTypes, 2, 2, "Hearts",
 				PORT_NUMBER);
 
 		// Add the default players
 		defaultConfig.addPlayer("Human", 0);
-		defaultConfig.addPlayer("Human", 0);
+		defaultConfig.addPlayer("Fredrick", 0);
 
 		// Set the initial information for the remote player
 		defaultConfig.setRemoteData("Guest", "", 0);

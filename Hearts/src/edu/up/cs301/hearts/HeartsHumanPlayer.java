@@ -2,6 +2,8 @@ package edu.up.cs301.hearts;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import edu.up.cs301.animation.AnimationSurface;
@@ -11,6 +13,8 @@ import edu.up.cs301.game.GameHumanPlayer;
 import edu.up.cs301.game.GameMainActivity;
 import edu.up.cs301.game.R;
 import edu.up.cs301.game.infoMsg.GameInfo;
+import edu.up.cs301.game.infoMsg.IllegalMoveInfo;
+import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
 
 public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	// sizes and locations of card decks and cards, expressed as percentages
@@ -67,31 +71,41 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
 	@Override
 	public void receiveInfo(GameInfo info) {
-		// TODO Auto-generated method stub
-		
+		Log.i("SJComputerPlayer", "receiving updated state ("+info.getClass()+")");
+		if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {
+			// if we had an out-of-turn or illegal move, flash the screen
+			surface.flash(Color.RED, 50);
+		}
+		else if (!(info instanceof HeartsState)) {
+			// otherwise, if it's not a game-state message, ignore
+			return;
+		}
+		else {
+			// it's a game-state object: update the state. Since we have an animation
+			// going, there is no need to explicitly display anything. That will happen
+			// at the next animation-tick, which should occur within 1/20 of a second
+			this.state = (HeartsState)info;
+			Log.i("human player", "receiving");
+		}
 	}
 
 	@Override
 	public int interval() {
-		// TODO Auto-generated method stub
 		return 20;
 	}
 
 	@Override
 	public int backgroundColor() {
-		// TODO Auto-generated method stub
 		return backgroundColor;
 	}
 
 	@Override
 	public boolean doPause() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean doQuit() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
