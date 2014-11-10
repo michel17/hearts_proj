@@ -1297,7 +1297,8 @@ containing a value of this type.
         public static final int game_player_list_row=0x7f03001d;
         public static final int game_remote_tab=0x7f03001e;
         public static final int hearts_human_player=0x7f03001f;
-        public static final int support_simple_spinner_dropdown_item=0x7f030020;
+        public static final int sj_human_player=0x7f030020;
+        public static final int support_simple_spinner_dropdown_item=0x7f030021;
     }
     public static final class menu {
         public static final int game_main=0x7f0c0000;
