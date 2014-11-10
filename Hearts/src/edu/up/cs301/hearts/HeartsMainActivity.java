@@ -22,13 +22,20 @@ public class HeartsMainActivity extends GameMainActivity {
 				return new HeartsHumanPlayer(name);
 			}
 		});
+		playerTypes.add(new GamePlayerType("Computer Player") {
+			public GamePlayer createPlayer(String name) {
+				return new HeartsComputerPlayer(name);
+			}
+		});
 		// Create a game configuration class for Hearts
-		GameConfig defaultConfig = new GameConfig(playerTypes, 2, 2, "Hearts",
+		GameConfig defaultConfig = new GameConfig(playerTypes, 4, 4, "Hearts",
 				PORT_NUMBER);
 
 		// Add the default players
 		defaultConfig.addPlayer("Human", 0);
 		defaultConfig.addPlayer("Fredrick", 0);
+		defaultConfig.addPlayer("SteveBot",1);
+		defaultConfig.addPlayer("JimBot",1);
 
 		// Set the initial information for the remote player
 		defaultConfig.setRemoteData("Guest", "", 0);

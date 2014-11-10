@@ -34,7 +34,18 @@ public class HeartsState extends GameState {
 	}
 	
 	public HeartsState(HeartsState orig) {
-		
+		overallScores = new int[NUM_PLAYERS];
+		handScores = new int[NUM_PLAYERS];
+		currentTrick = new Card[NUM_PLAYERS];
+		currentHands = new ArrayList<Card[]>();
+		heartsBroken = false;
+		for (int i = 0; i < overallScores.length; i++) {
+			overallScores[i] = orig.getOverallScore(i);
+			handScores[i] = orig.getHandScore(i);
+		}
+		currentTrick = orig.getCurrentTrick();
+		currentHands = new ArrayList<Card[]>();
+		heartsBroken = orig.isHeartsBroken();
 	}
 	
 	public int getSubState() {
@@ -51,6 +62,14 @@ public class HeartsState extends GameState {
 	
 	public int getHandScore(int idx) {
 		return handScores[idx];
+	}
+	
+	public Card[] getCurrentTrick() {
+		Card[] copy = new Card[NUM_PLAYERS];
+		for (int i = 0; i < copy.length; i++) {
+			copy[i] = currentTrick[i];
+		}
+		return copy;
 	}
 	public boolean isHeartsBroken() {
 		return heartsBroken;

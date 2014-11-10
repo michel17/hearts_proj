@@ -1,8 +1,15 @@
 package edu.up.cs301.hearts;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PointF;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +43,14 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		
 		// the background color
 		private int backgroundColor;
+		
+		private Paint paint;
+		private boolean hasChecked;
+		private char[] alphabet = { 'A', 'B', 'C', 'D' };
+		private int design = 0;
+		private Path wallPath;
+		private ArrayList<PointF> scorePoint = new ArrayList<>(3);
+		private static float width, height;
 
 	public HeartsHumanPlayer(String name) {
 		super(name);
@@ -109,7 +124,53 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	}
 
 	@Override
-	public void tick(Canvas canvas) {
+	public void tick(Canvas g) {
+		width = g.getWidth();
+		height = g.getHeight();
+		if (!hasChecked)
+			pointUpdate();
+		paint.setColor(Color.WHITE);
+		paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
+		paint.setTextSize(20);
+		for (int i = 0; i < scorePoint.size(); i++) {
+			g.drawText("Score: 0", scorePoint.get(i).x, scorePoint.get(i).y,
+					paint);
+			if (i == 3) {
+				paint.setColor(Color.YELLOW);
+				paint.setTextSize(30);
+				g.drawText("YOU", scorePoint.get(i).x,
+						scorePoint.get(i).y - 30, paint);
+			} else {
+				g.drawText("Player " + String.valueOf(alphabet[i]),
+						scorePoint.get(i).x, scorePoint.get(i).y - 30, paint);
+			}
+		}
+
+		Rect r = new Rect((int) width / 5, (int) height / 4,
+				(int) (width - width / 5), (int) (height - height / 4));
+		paint.setStyle(Paint.Style.FILL);
+		paint.setColor(0xff640000);
+		g.drawRect(r, paint);
+		paint.setColor(Color.WHITE);
+		paint.setTextSize(20);
+		g.drawText("Current Trick", (float) (width / 4.6),
+				(float) (height / 3.3), paint);
+		paint.setColor(Color.YELLOW);
+		paint.setTextSize(15);
+		g.drawText("01", (float) (width/3.2), (float) (height/3.55), paint);
+		
+		paint.setStyle(Paint.Style.STROKE);
+		g.drawRect(r, paint);
+		r = new Rect((int) width / 5, (int) height / 4, (int) (width / 3),
+				(int) (height / 3));
+
+		g.drawRect(r, paint);
+		for (design = 0; design < 3; design++) {
+			pathHelper();
+			g.drawPath(wallPath, paint);
+
+		}
+
 		
 	}
 
@@ -118,5 +179,41 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		// TODO Auto-generated method stub
 		
 	}
+	public void pointUpdate() {
+		PointF p;
+		p = new PointF(width / 10, height / 10);
+		scorePoint.add(p);
+		p = new PointF(width / 2, height / 10);
+		scorePoint.add(p);
+		p = new PointF(width - width / 10, height / 10);
+		scorePoint.add(p);
+		p = new PointF(width / 2, height - height / 10);
+		scorePoint.add(p);
+		hasChecked = true;
+	}
 
+	public void pathHelper() {
+		int triangleDepth = 20;
+		wallPath = new Path();
+		switch (design) {
+		case 0:
+			wallPath.moveTo(width / 5, height - height / 4);
+			wallPath.lineTo(width / 5, height - height / 4 - triangleDepth);
+			wallPath.lineTo(width / 5 + triangleDepth, height - height / 4);
+			wallPath.lineTo(width / 5, height - height / 4);
+			break;
+		case 1:
+			wallPath.moveTo(width - width / 5, height - height / 4);
+			wallPath.lineTo(width - width / 5, height - height / 4 - triangleDepth);
+			wallPath.lineTo(width - width / 5 - triangleDepth, height - height / 4);
+			wallPath.lineTo(width - width / 5, height - height / 4);
+			break;
+		case 2:
+			wallPath.moveTo(width - width / 5, height / 4);
+			wallPath.lineTo(width - width / 5, height / 4 + triangleDepth);
+			wallPath.lineTo(width - width / 5 - triangleDepth, height / 4);
+			wallPath.lineTo(width - width / 5, height / 4);
+			break;
+		}
+	}
 }
