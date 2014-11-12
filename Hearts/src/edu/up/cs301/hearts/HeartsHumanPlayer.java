@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,6 +17,8 @@ import android.view.View;
 import edu.up.cs301.animation.AnimationSurface;
 import edu.up.cs301.animation.Animator;
 import edu.up.cs301.card.Card;
+import edu.up.cs301.card.Rank;
+import edu.up.cs301.card.Suit;
 import edu.up.cs301.game.GameHumanPlayer;
 import edu.up.cs301.game.GameMainActivity;
 import edu.up.cs301.game.R;
@@ -51,11 +54,21 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		private Path wallPath;
 		private ArrayList<PointF> scorePoint = new ArrayList<>(3);
 		private static float width, height;
+		private ArrayList<Card> dummyCards;
 
 	public HeartsHumanPlayer(String name) {
 		super(name);
 		backgroundColor = 0xff006400;
 		paint = new Paint();
+		
+		//Set up dummy card arraylist
+		dummyCards = new ArrayList<Card>();
+		dummyCards.add(new Card(Rank.ACE, Suit.Club));
+		dummyCards.add(new Card(Rank.EIGHT, Suit.Heart));
+		dummyCards.add(new Card(Rank.FOUR, Suit.Heart));
+		dummyCards.add(new Card(Rank.EIGHT, Suit.Diamond));
+		dummyCards.add(new Card(Rank.EIGHT, Suit.Spade));
+		dummyCards.add(new Card(Rank.THREE, Suit.Heart));
 	}
 
 	@Override
@@ -171,6 +184,8 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			g.drawPath(wallPath, paint);
 
 		}
+		
+		drawCards(g);
 
 		
 	}
@@ -215,6 +230,13 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			wallPath.lineTo(width - width / 5 - triangleDepth, height / 4 - (height /8));
 			wallPath.lineTo(width - width / 5, height / 4 - (height /8));
 			break;
+		}
+	}
+	
+	private void drawCards(Canvas g) {
+		for (int i = 0; i < dummyCards.size(); i++) {
+			RectF r = new RectF( (width/13)*i,(height - (height/4)),(width/13)*(i+1),height);
+			dummyCards.get(i).drawOn(g,r);
 		}
 	}
 }
