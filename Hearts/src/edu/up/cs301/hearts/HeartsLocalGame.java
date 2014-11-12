@@ -45,6 +45,13 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	@Override
 	protected boolean makeMove(GameAction action) {
 		// TODO Auto-generated method stub
+		GamePlayer p;
+		if(action instanceof HeartsPlayAction){
+			p = action.getPlayer();
+			if(p instanceof HeartsHumanPlayer){
+				if(canMove((((HeartsHumanPlayer)p).getPlayerNumber())));
+			}
+		}
 		return false;
 	}
 

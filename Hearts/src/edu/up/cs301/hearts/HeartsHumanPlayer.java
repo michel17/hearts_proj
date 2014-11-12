@@ -194,6 +194,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	public void onTouch(MotionEvent event) {
 		// TODO Auto-generated method stub
 		
+		
 	}
 	public void pointUpdate() {
 		PointF p;
@@ -238,5 +239,9 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			RectF r = new RectF( (width/13)*i,(height - (height/4)),(width/13)*(i+1),height);
 			dummyCards.get(i).drawOn(g,r);
 		}
+	}
+	
+	public int getPlayerNumber(){
+		return playerNum;
 	}
 }

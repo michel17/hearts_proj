@@ -24,5 +24,9 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 			}
 		}
 	}
+	
+	public int getPlayerNumber(){
+		return playerNum;
+	}
 
 }
