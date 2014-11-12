@@ -55,6 +55,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	public HeartsHumanPlayer(String name) {
 		super(name);
 		backgroundColor = 0xff006400;
+		paint = new Paint();
 	}
 
 	@Override
