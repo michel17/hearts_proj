@@ -147,23 +147,23 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			}
 		}
 
-		Rect r = new Rect((int) width / 5, (int) height / 4,
-				(int) (width - width / 5), (int) (height - height / 4));
+		Rect r = new Rect((int) width / 5, (int) ((height / 4) - (height /8)),
+				(int) (width - width / 5), (int) ((height - height / 4) - (height /8)));
 		paint.setStyle(Paint.Style.FILL);
 		paint.setColor(0xff640000);
 		g.drawRect(r, paint);
 		paint.setColor(Color.WHITE);
 		paint.setTextSize(20);
 		g.drawText("Current Trick", (float) (width / 4.6),
-				(float) (height / 3.3), paint);
+				(float) (height / 5.3), paint);
 		paint.setColor(Color.YELLOW);
 		paint.setTextSize(15);
-		g.drawText("01", (float) (width/3.2), (float) (height/3.55), paint);
+		g.drawText("01", (float) (width/3.2), (float) (height/5.9), paint);
 		
 		paint.setStyle(Paint.Style.STROKE);
 		g.drawRect(r, paint);
-		r = new Rect((int) width / 5, (int) height / 4, (int) (width / 3),
-				(int) (height / 3));
+		r = new Rect((int) width / 5, (int) ((height / 4) - (height /8)), (int) (width / 3),
+				(int) ((height / 3) - (height /8)));
 
 		g.drawRect(r, paint);
 		for (design = 0; design < 3; design++) {
@@ -188,7 +188,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		scorePoint.add(p);
 		p = new PointF(width - width / 10, height / 10);
 		scorePoint.add(p);
-		p = new PointF(width / 2, height - height / 10);
+		p = new PointF(width / 10, height - (float) (height / 2.5));
 		scorePoint.add(p);
 		hasChecked = true;
 	}
@@ -198,22 +198,22 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		wallPath = new Path();
 		switch (design) {
 		case 0:
-			wallPath.moveTo(width / 5, height - height / 4);
-			wallPath.lineTo(width / 5, height - height / 4 - triangleDepth);
-			wallPath.lineTo(width / 5 + triangleDepth, height - height / 4);
-			wallPath.lineTo(width / 5, height - height / 4);
+			wallPath.moveTo(width / 5, height - height / 4 - (height /8));
+			wallPath.lineTo(width / 5, height - height / 4 - triangleDepth - (height /8));
+			wallPath.lineTo(width / 5 + triangleDepth, height - height / 4 - (height /8));
+			wallPath.lineTo(width / 5, height - height / 4 - (height /8));
 			break;
 		case 1:
-			wallPath.moveTo(width - width / 5, height - height / 4);
-			wallPath.lineTo(width - width / 5, height - height / 4 - triangleDepth);
-			wallPath.lineTo(width - width / 5 - triangleDepth, height - height / 4);
-			wallPath.lineTo(width - width / 5, height - height / 4);
+			wallPath.moveTo(width - width / 5, height - height / 4 - (height /8));
+			wallPath.lineTo(width - width / 5, height - height / 4 - triangleDepth - (height /8));
+			wallPath.lineTo(width - width / 5 - triangleDepth, height - height / 4 - (height /8));
+			wallPath.lineTo(width - width / 5, height - height / 4 - (height /8));
 			break;
 		case 2:
-			wallPath.moveTo(width - width / 5, height / 4);
-			wallPath.lineTo(width - width / 5, height / 4 + triangleDepth);
-			wallPath.lineTo(width - width / 5 - triangleDepth, height / 4);
-			wallPath.lineTo(width - width / 5, height / 4);
+			wallPath.moveTo(width - width / 5, height / 4 - (height /8));
+			wallPath.lineTo(width - width / 5, height / 4 + triangleDepth - (height /8));
+			wallPath.lineTo(width - width / 5 - triangleDepth, height / 4 - (height /8));
+			wallPath.lineTo(width - width / 5, height / 4 - (height /8));
 			break;
 		}
 	}
