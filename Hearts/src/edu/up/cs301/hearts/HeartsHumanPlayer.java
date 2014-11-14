@@ -55,11 +55,14 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		private ArrayList<PointF> scorePoint = new ArrayList<>(3);
 		private static float width, height;
 		private ArrayList<Card> dummyCards;
+		private float currentspacing;
+		private Card selectedCard;
 
 	public HeartsHumanPlayer(String name) {
 		super(name);
 		backgroundColor = 0xff006400;
 		paint = new Paint();
+		selectedCard = null;
 		
 		//Set up dummy card arraylist
 		dummyCards = new ArrayList<Card>();
@@ -69,6 +72,13 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		dummyCards.add(new Card(Rank.EIGHT, Suit.Diamond));
 		dummyCards.add(new Card(Rank.EIGHT, Suit.Spade));
 		dummyCards.add(new Card(Rank.THREE, Suit.Heart));
+		dummyCards.add(new Card(Rank.ACE, Suit.Spade));
+		dummyCards.add(new Card(Rank.SIX, Suit.Diamond));
+		dummyCards.add(new Card(Rank.FIVE, Suit.Heart));
+		dummyCards.add(new Card(Rank.JACK, Suit.Spade));
+		dummyCards.add(new Card(Rank.QUEEN, Suit.Club));
+		dummyCards.add(new Card(Rank.TWO, Suit.Club));
+		dummyCards.add(new Card(Rank.NINE, Suit.Diamond));
 	}
 
 	@Override
@@ -141,6 +151,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	public void tick(Canvas g) {
 		width = g.getWidth();
 		height = g.getHeight();
+		
 		if (!hasChecked)
 			pointUpdate();
 		paint.setColor(Color.WHITE);
@@ -184,17 +195,20 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			g.drawPath(wallPath, paint);
 
 		}
-		
-		drawCards(g);
-
-		
+		drawCards(g);	
 	}
 
 	@Override
 	public void onTouch(MotionEvent event) {
-		// TODO Auto-generated method stub
-		
-		
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			float tx = event.getX();
+			float ty = event.getY();
+			int handIdx = (int) ((dummyCards.size())*tx/width);
+			if (ty > height - (height / 3)) {//in bounds vertically
+				selectedCard = dummyCards.get(handIdx);
+			}
+			selectedCard = null;
+		}
 	}
 	public void pointUpdate() {
 		PointF p;
@@ -235,11 +249,34 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	}
 	
 	private void drawCards(Canvas g) {
+		currentspacing = dummyCards.size();
 		for (int i = 0; i < dummyCards.size(); i++) {
-			RectF r = new RectF( (width/13)*i,(height - (height/4)),(width/13)*(i+1),height);
-			dummyCards.get(i).drawOn(g,r);
+		if (selectedCard != null && dummyCards.get(i).equals(selectedCard)) {
+				drawSelectedCard(g, dummyCards.get(i), i);
+			} else {
+				RectF r = new RectF((width / currentspacing) * i,
+						(height - (height / 3)), (width / currentspacing) * i
+								+ 150, height);
+				dummyCards.get(i).drawOn(g, r);
+			}
 		}
 	}
+
+	private void drawSelectedCard(Canvas g, Card c, int loc) {
+		if (c == null) {
+			return;
+		}
+		paint.setColor(Color.YELLOW);
+		RectF highlight = new RectF((width / currentspacing) * loc - 1,
+				(height - (height / 3)) - 101, (width / currentspacing) * loc
+						+ 151, height - 99);
+		g.drawRect(highlight, paint);
+		RectF r = new RectF((width / currentspacing) * loc,
+				(height - (height / 3)) - 100, (width / currentspacing) * loc
+						+ 150, height - 100);
+		c.drawOn(g, r);
+	}
+
 	
 	public int getPlayerNumber(){
 		return playerNum;

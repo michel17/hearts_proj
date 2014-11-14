@@ -33,7 +33,7 @@ public class HeartsMainActivity extends GameMainActivity {
 
 		// Add the default players
 		defaultConfig.addPlayer("Human", 0);
-		defaultConfig.addPlayer("Fredrick", 0);
+		defaultConfig.addPlayer("FredrickBot", 1);
 		defaultConfig.addPlayer("SteveBot",1);
 		defaultConfig.addPlayer("JimBot",1);
 
