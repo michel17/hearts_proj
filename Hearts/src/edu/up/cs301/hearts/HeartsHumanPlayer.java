@@ -28,43 +28,46 @@ import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
 
 public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	// sizes and locations of card decks and cards, expressed as percentages
-		// of the screen height and width
-		private final static float CARD_HEIGHT_PERCENT = 50; // height of a card
-		private final static float CARD_WIDTH_PERCENT = 17; // width of a card
-		private final static float LEFT_BORDER_PERCENT = 4; // width of left border
-		private final static float RIGHT_BORDER_PERCENT = 20; // width of right border
-		private final static float VERTICAL_BORDER_PERCENT = 4; // width of top/bottom borders
-		
-		// our game state
-		protected HeartsState state;
+	// of the screen height and width
+	private final static float CARD_HEIGHT_PERCENT = 50; // height of a card
+	private final static float CARD_WIDTH_PERCENT = 17; // width of a card
+	private final static float LEFT_BORDER_PERCENT = 4; // width of left border
+	private final static float RIGHT_BORDER_PERCENT = 20; // width of right
+															// border
+	private final static float VERTICAL_BORDER_PERCENT = 4; // width of
+															// top/bottom
+															// borders
 
-		// our activity
-		private Activity myActivity;
+	// our game state
+	protected HeartsState state;
 
-		// the animation surface
-		private AnimationSurface surface;
-		
-		// the background color
-		private int backgroundColor;
-		
-		private Paint paint;
-		private boolean hasChecked;
-		private char[] alphabet = { 'A', 'B', 'C', 'D' };
-		private int design = 0;
-		private Path wallPath;
-		private ArrayList<PointF> scorePoint = new ArrayList<>(3);
-		private static float width, height;
-		private ArrayList<Card> dummyCards;
-		private float currentspacing;
-		private Card selectedCard;
+	// our activity
+	private Activity myActivity;
+
+	// the animation surface
+	private AnimationSurface surface;
+
+	// the background color
+	private int backgroundColor;
+
+	private Paint paint;
+	private boolean hasChecked;
+	private char[] alphabet = { 'A', 'B', 'C', 'D' };
+	private int design = 0;
+	private Path wallPath;
+	private ArrayList<PointF> scorePoint = new ArrayList<>(3);
+	private static float width, height;
+	private ArrayList<Card> dummyCards;
+	private float currentspacing;
+	private Card selectedCard;
 
 	public HeartsHumanPlayer(String name) {
 		super(name);
 		backgroundColor = 0xff006400;
 		paint = new Paint();
 		selectedCard = null;
-		
-		//Set up dummy card arraylist
+
+		// Set up dummy card arraylist
 		dummyCards = new ArrayList<Card>();
 		dummyCards.add(new Card(Rank.ACE, Suit.Club));
 		dummyCards.add(new Card(Rank.EIGHT, Suit.Heart));
@@ -85,21 +88,22 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	public void setAsGui(GameMainActivity activity) {
 		myActivity = activity;
 		// Load the layout resource for the new configuration
-				activity.setContentView(R.layout.hearts_human_player);
+		activity.setContentView(R.layout.hearts_human_player);
 
-				// link the animator (this object) to the animation surface
-				surface = (AnimationSurface) myActivity
-						.findViewById(R.id.animation_surface);
-				surface.setAnimator(this);
-				
-				// read in the card images
-				Card.initImages(activity);
+		// link the animator (this object) to the animation surface
+		surface = (AnimationSurface) myActivity
+				.findViewById(R.id.animation_surface);
+		surface.setAnimator(this);
 
-				// if the state is not null, simulate having just received the state so that
-				// any state-related processing is done
-				if (state != null) {
-					receiveInfo(state);
-				}
+		// read in the card images
+		Card.initImages(activity);
+
+		// if the state is not null, simulate having just received the state so
+		// that
+		// any state-related processing is done
+		if (state != null) {
+			receiveInfo(state);
+		}
 	}
 
 	@Override
@@ -109,20 +113,22 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
 	@Override
 	public void receiveInfo(GameInfo info) {
-		Log.i("HeartsHumanPlayer", "receiving updated state ("+info.getClass()+")");
+		Log.i("HeartsHumanPlayer",
+				"receiving updated state (" + info.getClass() + ")");
 		if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {
 			// if we had an out-of-turn or illegal move, flash the screen
 			surface.flash(Color.RED, 50);
-		}
-		else if (!(info instanceof HeartsState)) {
+		} else if (!(info instanceof HeartsState)) {
 			// otherwise, if it's not a game-state message, ignore
 			return;
-		}
-		else {
-			// it's a game-state object: update the state. Since we have an animation
-			// going, there is no need to explicitly display anything. That will happen
-			// at the next animation-tick, which should occur within 1/20 of a second
-			this.state = (HeartsState)info;
+		} else {
+			// it's a game-state object: update the state. Since we have an
+			// animation
+			// going, there is no need to explicitly display anything. That will
+			// happen
+			// at the next animation-tick, which should occur within 1/20 of a
+			// second
+			this.state = (HeartsState) info;
 			Log.i("human player", "receiving");
 		}
 	}
@@ -151,7 +157,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	public void tick(Canvas g) {
 		width = g.getWidth();
 		height = g.getHeight();
-		
+
 		if (!hasChecked)
 			pointUpdate();
 		paint.setColor(Color.WHITE);
@@ -171,8 +177,9 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			}
 		}
 
-		Rect r = new Rect((int) width / 5, (int) ((height / 4) - (height /8)),
-				(int) (width - width / 5), (int) ((height - height / 4) - (height /8)));
+		Rect r = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)),
+				(int) (width - width / 5),
+				(int) ((height - height / 4) - (height / 8)));
 		paint.setStyle(Paint.Style.FILL);
 		paint.setColor(0xff640000);
 		g.drawRect(r, paint);
@@ -182,12 +189,12 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 				(float) (height / 5.3), paint);
 		paint.setColor(Color.YELLOW);
 		paint.setTextSize(15);
-		g.drawText("01", (float) (width/3.2), (float) (height/5.9), paint);
-		
+		g.drawText("01", (float) (width / 3.2), (float) (height / 5.9), paint);
+
 		paint.setStyle(Paint.Style.STROKE);
 		g.drawRect(r, paint);
-		r = new Rect((int) width / 5, (int) ((height / 4) - (height /8)), (int) (width / 3),
-				(int) ((height / 3) - (height /8)));
+		r = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)),
+				(int) (width / 3), (int) ((height / 3) - (height / 8)));
 
 		g.drawRect(r, paint);
 		for (design = 0; design < 3; design++) {
@@ -195,7 +202,8 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			g.drawPath(wallPath, paint);
 
 		}
-		drawCards(g);	
+		drawTrick(g);
+		drawCards(g);
 	}
 
 	@Override
@@ -203,13 +211,15 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			float tx = event.getX();
 			float ty = event.getY();
-			int handIdx = (int) ((dummyCards.size())*tx/width);
-			if (ty > height - (height / 3)) {//in bounds vertically
+			int handIdx = (int) ((dummyCards.size()) * tx / width);
+			if (ty > height - (height / 3) && !(dummyCards.get(handIdx) == selectedCard)) {// in bounds vertically
 				selectedCard = dummyCards.get(handIdx);
+			} else {
+				selectedCard = null;
 			}
-			selectedCard = null;
 		}
 	}
+
 	public void pointUpdate() {
 		PointF p;
 		p = new PointF(width / 10, height / 10);
@@ -228,30 +238,38 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		wallPath = new Path();
 		switch (design) {
 		case 0:
-			wallPath.moveTo(width / 5, height - height / 4 - (height /8));
-			wallPath.lineTo(width / 5, height - height / 4 - triangleDepth - (height /8));
-			wallPath.lineTo(width / 5 + triangleDepth, height - height / 4 - (height /8));
-			wallPath.lineTo(width / 5, height - height / 4 - (height /8));
+			wallPath.moveTo(width / 5, height - height / 4 - (height / 8));
+			wallPath.lineTo(width / 5, height - height / 4 - triangleDepth
+					- (height / 8));
+			wallPath.lineTo(width / 5 + triangleDepth, height - height / 4
+					- (height / 8));
+			wallPath.lineTo(width / 5, height - height / 4 - (height / 8));
 			break;
 		case 1:
-			wallPath.moveTo(width - width / 5, height - height / 4 - (height /8));
-			wallPath.lineTo(width - width / 5, height - height / 4 - triangleDepth - (height /8));
-			wallPath.lineTo(width - width / 5 - triangleDepth, height - height / 4 - (height /8));
-			wallPath.lineTo(width - width / 5, height - height / 4 - (height /8));
+			wallPath.moveTo(width - width / 5, height - height / 4
+					- (height / 8));
+			wallPath.lineTo(width - width / 5, height - height / 4
+					- triangleDepth - (height / 8));
+			wallPath.lineTo(width - width / 5 - triangleDepth, height - height
+					/ 4 - (height / 8));
+			wallPath.lineTo(width - width / 5, height - height / 4
+					- (height / 8));
 			break;
 		case 2:
-			wallPath.moveTo(width - width / 5, height / 4 - (height /8));
-			wallPath.lineTo(width - width / 5, height / 4 + triangleDepth - (height /8));
-			wallPath.lineTo(width - width / 5 - triangleDepth, height / 4 - (height /8));
-			wallPath.lineTo(width - width / 5, height / 4 - (height /8));
+			wallPath.moveTo(width - width / 5, height / 4 - (height / 8));
+			wallPath.lineTo(width - width / 5, height / 4 + triangleDepth
+					- (height / 8));
+			wallPath.lineTo(width - width / 5 - triangleDepth, height / 4
+					- (height / 8));
+			wallPath.lineTo(width - width / 5, height / 4 - (height / 8));
 			break;
 		}
 	}
-	
+
 	private void drawCards(Canvas g) {
 		currentspacing = dummyCards.size();
 		for (int i = 0; i < dummyCards.size(); i++) {
-		if (selectedCard != null && dummyCards.get(i).equals(selectedCard)) {
+			if (selectedCard != null && dummyCards.get(i).equals(selectedCard)) {
 				drawSelectedCard(g, dummyCards.get(i), i);
 			} else {
 				RectF r = new RectF((width / currentspacing) * i,
@@ -278,18 +296,27 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	}
 
 	private void drawTrick(Canvas g) {
+		if (state == null) {
+			return;
+		}
 		Card[] trick = state.getCurrentTrick();
-		//TEMP
-		trick[0] = new Card(Rank.ACE,Suit.Spade);
+		// TEMP///
+		trick[0] = new Card(Rank.ACE, Suit.Spade);
+		trick[1] = new Card(Rank.QUEEN, Suit.Spade);
+		trick[2] = new Card(Rank.SIX, Suit.Spade);
+		trick[3] = new Card(Rank.ACE, Suit.Heart);
+		/////////
 		for (int i = 0; i < trick.length; i++) {
 			if (trick[i] != null) {
-				RectF r = new RectF((width/5) + i*(width-(2*width/5))/4,3*height/8,150,height - (3*height/8));
-				trick[i].drawOn(g,r);
+				RectF r = new RectF((width / 5) + i * (width - (2 * width / 5))
+						/ 4 + 20, height / 4, (width / 5) + i * (width - (2 * width / 5))
+						/4 + 170, height - (3 * height / 8) - 20);
+				trick[i].drawOn(g, r);
 			}
 		}
 	}
-	
-	public int getPlayerNumber(){
+
+	public int getPlayerNumber() {
 		return playerNum;
 	}
 }
