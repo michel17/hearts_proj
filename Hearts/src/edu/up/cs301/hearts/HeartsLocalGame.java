@@ -17,39 +17,39 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		String suit = null;
 		String rank;
 		String newCard;
-		for(int i = 0;i<4;i++){
+		for(int i = 0; i < 4; i++){
 			switch(i){
-			case 1: i = 0;
+			case 0:
 				suit = "H";
 				break;
 			
-			case 2: i = 1;
+			case 1:
 				suit = "S";
 				break;
 			
-			case 3: i = 2;
+			case 2:
 				suit = "D";
 				break;
 			
-			case 4: i = 3;
+			case 3:
 				suit = "C";
 				break;
 			}
-			for(int j = 2;j<15; j++){
+			for(int j = 2; j < 15; j++){
 				switch(j){
-				case 1: j = 10;
+				case 10:
 					rank = "T";
 					break;
-				case 2: j = 11;
+				case 11:
 					rank = "J";
 					break;
-				case 3: j = 12;
+				case 12:
 					rank = "Q";
 					break;
-				case 4: j = 13;
+				case 13:
 					rank = "K";
 					break;
-				case 5: j = 14;
+				case 14:
 					rank = "A";
 					break;
 				default:
@@ -59,8 +59,6 @@ public class HeartsLocalGame extends LocalGame implements Game {
 				newCard = rank + suit;
 				deck[count] = Card.fromString(newCard);
 				count++;
-				
-				
 			}
 		}
 		state = new HeartsState();

@@ -277,6 +277,17 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		c.drawOn(g, r);
 	}
 
+	private void drawTrick(Canvas g) {
+		Card[] trick = state.getCurrentTrick();
+		//TEMP
+		trick[0] = new Card(Rank.ACE,Suit.Spade);
+		for (int i = 0; i < trick.length; i++) {
+			if (trick[i] != null) {
+				RectF r = new RectF((width/5) + i*(width-(2*width/5))/4,3*height/8,150,height - (3*height/8));
+				trick[i].drawOn(g,r);
+			}
+		}
+	}
 	
 	public int getPlayerNumber(){
 		return playerNum;
