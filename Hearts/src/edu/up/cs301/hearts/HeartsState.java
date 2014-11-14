@@ -29,7 +29,7 @@ public class HeartsState extends GameState {
 		overallScores = new int[NUM_PLAYERS];
 		handScores = new int[NUM_PLAYERS];
 		currentTrick = new Card[NUM_PLAYERS];
-		currentHands = new ArrayList<Card[]>();
+		Card[][] currentHands = new Card[4][13];
 		heartsBroken = false;
 	}
 	
@@ -84,6 +84,7 @@ public class HeartsState extends GameState {
 	}
 	public void setSubstate(int i){
 		// TODO FIX THIS ISH
+		subState = i;
 		return;
 	}
 	
