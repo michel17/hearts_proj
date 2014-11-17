@@ -109,6 +109,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	protected boolean makeMove(GameAction action) {
 		// TODO Auto-generated method stub
 		GamePlayer p;
+		boolean tf;
 		if (action instanceof HeartsPlayAction) {
 			HeartsPlayAction act = (HeartsPlayAction) action;
 			p = action.getPlayer();
@@ -116,13 +117,18 @@ public class HeartsLocalGame extends LocalGame implements Game {
 				if (players[i].equals(p)) {
 					if (canMove(i) == true) {
 						Card[] trick = state.getCurrentTrick();
-						Card[][] newDeal = state.getCurrentDeal();
 						Suit ledSuit = null;
 						for (int j = 0; j < trick.length; j++) {
 							if (trick[j] == null) {
 								if (isValidPlay(act.getPlayedCard(),i,ledSuit)) {
-									trick[j] = act.getPlayedCard();
-									newDeal = removeCard(act.getPlayedCard());
+									tf = state.addCardToTrick(act.PlayedCard);
+									if(tf == true){
+										sendUpdatedStateTo(p);
+										return true;
+									}
+									else{
+										return false;
+									}
 								}
 								break;
 							}
@@ -131,7 +137,6 @@ public class HeartsLocalGame extends LocalGame implements Game {
 							}
 						}
 						setTurnIdx(-1);
-						state = new HeartsState(newDeal,state.getOverallScores(),state.getHandScores(),trick,state.isHeartsBroken());
 						return true;
 					}
 					break;
@@ -186,21 +191,5 @@ public class HeartsLocalGame extends LocalGame implements Game {
 			return true;
 		}
 		return false;
-	}
-	
-	private Card[][] removeCard(Card del) {
-		Card[][] newDeal = new Card[4][13];
-		Card[][] currentDeal = state.getCurrentDeal();
-		for (int i = 0; i < newDeal.length; i++) {
-			for (int j = 0; j < newDeal[i].length; j++) {
-				if (del == currentDeal[i][j]) {
-					newDeal[i][j] = null;
-				}
-				else {
-					newDeal[i][j] = currentDeal[i][j];
-				}
-			}
-		}
-		return newDeal;
 	}
 }

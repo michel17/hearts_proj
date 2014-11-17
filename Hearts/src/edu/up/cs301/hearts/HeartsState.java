@@ -109,6 +109,30 @@ public class HeartsState extends GameState {
 		}
 		return hand;
 	}
+
+	/**
+	 * addCardToTrick
+	 * 
+	 * adds a card to the next open slot in the currentTrick array.
+	 * Returns true if we were able to find an open slot, false if we could not
+	 * @param c
+	 * @return
+	 */
+	public boolean addCardToTrick(Card c){
+		for(int i = 0; i < currentTrick.length; i++){
+			if(currentTrick[i] == null){
+				currentTrick[i] = c;
+				removeCard(c);
+				return true;
+			}
+			else{
+				i++;
+			}
+		}
+		return false;
+	}
+	
+		
 	
 	public int[] getOverallScores() {
 		return overallScores;
@@ -116,5 +140,20 @@ public class HeartsState extends GameState {
 	
 	public int[] getHandScores() {
 		return handScores;
+	}
+	
+	private Card[][] removeCard(Card del) {
+		Card[][] newDeal = new Card[4][13];
+		for (int i = 0; i < newDeal.length; i++) {
+			for (int j = 0; j < newDeal[i].length; j++) {
+				if (del == currentHands[i][j]) {
+					newDeal[i][j] = null;
+				}
+				else {
+					newDeal[i][j] = currentHands[i][j];
+				}
+			}
+		}
+		return newDeal;
 	}
 }
