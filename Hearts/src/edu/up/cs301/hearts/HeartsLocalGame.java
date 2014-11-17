@@ -1,42 +1,49 @@
 package edu.up.cs301.hearts;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import edu.up.cs301.card.Card;
+import edu.up.cs301.card.Suit;
 import edu.up.cs301.game.Game;
 import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.LocalGame;
 import edu.up.cs301.game.actionMsg.GameAction;
+import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
 
 public class HeartsLocalGame extends LocalGame implements Game {
 
 	HeartsState state;
 	Card[] deck;
-	
+	int turnIdx;
+
 	public HeartsLocalGame() {
+		super();
 		int count = 0;
-		deck =  new Card[52];
+		deck = new Card[52];
 		String suit = null;
 		String rank;
 		String newCard;
-		for(int i = 0; i < 4; i++){
-			switch(i){
+		for (int i = 0; i < 4; i++) {
+			switch (i) {
 			case 0:
 				suit = "H";
 				break;
-			
+
 			case 1:
 				suit = "S";
 				break;
-			
+
 			case 2:
 				suit = "D";
 				break;
-			
+
 			case 3:
 				suit = "C";
 				break;
 			}
-			for(int j = 2; j < 15; j++){
-				switch(j){
+			for (int j = 2; j < 15; j++) {
+				switch (j) {
 				case 10:
 					rank = "T";
 					break;
@@ -61,32 +68,37 @@ public class HeartsLocalGame extends LocalGame implements Game {
 				count++;
 			}
 		}
-		state = new HeartsState();
+		Card[][] deal = createNewDeal();
+		state = new HeartsState(deal, new int[4], new int[4], new Card[4], false);
 	}
+
 	@Override
 	protected void sendUpdatedStateTo(GamePlayer p) {
-		if(p instanceof HeartsHumanPlayer){
-		((HeartsHumanPlayer)p).receiveInfo(new HeartsState(state));
+		if (p == null) {
+			return;
 		}
-		else if(p instanceof HeartsComputerPlayer){
-			((HeartsComputerPlayer)p).receiveInfo(new HeartsState(state));
+		int playerIdx = 0;
+		for (int i = 0; i < players.length; i++) {
+			if (players[i] == p) {
+				playerIdx = i;
+			}
 		}
+		p.sendInfo(new HeartsState(state,playerIdx));
 	}
 
 	@Override
 	protected boolean canMove(int playerIdx) {
-		if(playerIdx == state.getTurnIdx()){
+		if (playerIdx == turnIdx) {
 			return true;
-		}
-		else{
+		} else {
 			return false;
 		}
 	}
 
 	@Override
 	protected String checkIfGameOver() {
-		for(int i = 0; i < state.getNumPlayers(); i++){
-			if(state.getOverallScore(i) >= 100){
+		for (int i = 0; i < state.getNumPlayers(); i++) {
+			if (state.getOverallScore(i) >= 100) {
 				return this.playerNames[i] + " is teh winrar";
 			}
 		}
@@ -97,13 +109,98 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	protected boolean makeMove(GameAction action) {
 		// TODO Auto-generated method stub
 		GamePlayer p;
-		if(action instanceof HeartsPlayAction){
+		if (action instanceof HeartsPlayAction) {
+			HeartsPlayAction act = (HeartsPlayAction) action;
 			p = action.getPlayer();
-			if(p instanceof HeartsHumanPlayer){
-				if(canMove((((HeartsHumanPlayer)p).getPlayerNumber())));
+			for (int i = 0; i < players.length; i++) {
+				if (players[i].equals(p)) {
+					if (canMove(i) == true) {
+						Card[] trick = state.getCurrentTrick();
+						Card[][] newDeal = state.getCurrentDeal();
+						Suit ledSuit = null;
+						for (int j = 0; j < trick.length; j++) {
+							if (trick[j] == null) {
+								if (isValidPlay(act.getPlayedCard(),i,ledSuit)) {
+									trick[j] = act.getPlayedCard();
+									newDeal = removeCard(act.getPlayedCard());
+								}
+								break;
+							}
+							else if (j == 0) {
+								ledSuit = act.getPlayedCard().getSuit();
+							}
+						}
+						setTurnIdx(-1);
+						state = new HeartsState(newDeal,state.getOverallScores(),state.getHandScores(),trick,state.isHeartsBroken());
+						return true;
+					}
+					break;
+				}
 			}
+			p.sendInfo(new NotYourTurnInfo());
+		}
+		
+		return false;
+	}
+	
+	private Card[][] createNewDeal() {
+		Card[][] deal = new Card[4][13];
+		//essentially, pick a random order to attempt dealing cards in
+		ArrayList<Integer> order = new ArrayList<Integer>();
+		order.add(0); order.add(1); order.add(2); order.add(3);
+		for (int card = 0; card < deck.length; card++) {
+			Collections.shuffle(order);
+			for (int player: order) {
+				int i = 0;
+				while (i < 13 && deal[player][i] != null) {
+					i++;
+				}
+				if (i < 13) {
+					deal[player][i] = deck[card];
+					break;
+				}
+				//otherwise, this player's hand is full, try the next one
+			}
+		}
+		return deal;
+	}
+
+	public void setTurnIdx(int i){
+		if(i == -1){
+			turnIdx++;
+			turnIdx = turnIdx % 4;
+		}
+		else if(i < 4){
+			turnIdx = i;
+		}
+	}
+	
+	private boolean isValidPlay(Card c, int idx, Suit ledSuit) {
+		ArrayList<Card> playersHand = state.getPlayerHand(idx);
+		if (playersHand.contains(c)) {
+			for (Card test: playersHand) {
+				if (test.getSuit().equals(ledSuit)) {
+					return false;
+				}
+			}
+			return true;
 		}
 		return false;
 	}
-
+	
+	private Card[][] removeCard(Card del) {
+		Card[][] newDeal = new Card[4][13];
+		Card[][] currentDeal = state.getCurrentDeal();
+		for (int i = 0; i < newDeal.length; i++) {
+			for (int j = 0; j < newDeal[i].length; j++) {
+				if (del == currentDeal[i][j]) {
+					newDeal[i][j] = null;
+				}
+				else {
+					newDeal[i][j] = currentDeal[i][j];
+				}
+			}
+		}
+		return newDeal;
+	}
 }

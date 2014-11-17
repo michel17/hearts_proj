@@ -13,6 +13,9 @@ public class HeartsPlayAction extends GameAction {
 	public HeartsPlayAction(GamePlayer player, Card c) {
 		super(player);
 		PlayedCard = c;
-		// TODO Auto-generated constructor stub
+	}
+	
+	public Card getPlayedCard() {
+		return PlayedCard;
 	}
 }

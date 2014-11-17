@@ -47,7 +47,6 @@ public class HeartsMainActivity extends GameMainActivity {
 
 	@Override
 	public LocalGame createLocalGame() {
-
 		return new HeartsLocalGame();
 	}
 

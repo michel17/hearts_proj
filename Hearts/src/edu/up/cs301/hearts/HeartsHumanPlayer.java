@@ -27,16 +27,6 @@ import edu.up.cs301.game.infoMsg.IllegalMoveInfo;
 import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
 
 public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
-	// sizes and locations of card decks and cards, expressed as percentages
-	// of the screen height and width
-	private final static float CARD_HEIGHT_PERCENT = 50; // height of a card
-	private final static float CARD_WIDTH_PERCENT = 17; // width of a card
-	private final static float LEFT_BORDER_PERCENT = 4; // width of left border
-	private final static float RIGHT_BORDER_PERCENT = 20; // width of right
-															// border
-	private final static float VERTICAL_BORDER_PERCENT = 4; // width of
-															// top/bottom
-															// borders
 
 	// our game state
 	protected HeartsState state;
@@ -57,7 +47,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	private Path wallPath;
 	private ArrayList<PointF> scorePoint = new ArrayList<>(3);
 	private static float width, height;
-	private ArrayList<Card> dummyCards;
+	private ArrayList<Card> hand;
 	private float currentspacing;
 	private Card selectedCard;
 
@@ -68,20 +58,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		selectedCard = null;
 
 		// Set up dummy card arraylist
-		dummyCards = new ArrayList<Card>();
-		dummyCards.add(new Card(Rank.ACE, Suit.Club));
-		dummyCards.add(new Card(Rank.EIGHT, Suit.Heart));
-		dummyCards.add(new Card(Rank.FOUR, Suit.Heart));
-		dummyCards.add(new Card(Rank.EIGHT, Suit.Diamond));
-		dummyCards.add(new Card(Rank.EIGHT, Suit.Spade));
-		dummyCards.add(new Card(Rank.THREE, Suit.Heart));
-		dummyCards.add(new Card(Rank.ACE, Suit.Spade));
-		dummyCards.add(new Card(Rank.SIX, Suit.Diamond));
-		dummyCards.add(new Card(Rank.FIVE, Suit.Heart));
-		dummyCards.add(new Card(Rank.JACK, Suit.Spade));
-		dummyCards.add(new Card(Rank.QUEEN, Suit.Club));
-		dummyCards.add(new Card(Rank.TWO, Suit.Club));
-		dummyCards.add(new Card(Rank.NINE, Suit.Diamond));
+		hand = new ArrayList<Card>();
 	}
 
 	@Override
@@ -113,6 +90,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
 	@Override
 	public void receiveInfo(GameInfo info) {
+		System.out.println(info.toString());
 		Log.i("HeartsHumanPlayer",
 				"receiving updated state (" + info.getClass() + ")");
 		if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {
@@ -129,6 +107,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			// at the next animation-tick, which should occur within 1/20 of a
 			// second
 			this.state = (HeartsState) info;
+			hand = state.getPlayerHand(playerNum);
 			Log.i("human player", "receiving");
 		}
 	}
@@ -211,11 +190,24 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			float tx = event.getX();
 			float ty = event.getY();
-			int handIdx = (int) ((dummyCards.size()) * tx / width);
-			if (ty > height - (height / 3) && !(dummyCards.get(handIdx) == selectedCard)) {// in bounds vertically
-				selectedCard = dummyCards.get(handIdx);
+			Rect trickBoundingBox = new Rect((int) width / 5,
+					(int) ((height / 4) - (height / 8)),
+					(int) (width - width / 5),
+					(int) ((height - height / 4) - (height / 8)));
+			if (selectedCard != null && trickBoundingBox.contains((int) tx, (int) ty)) {
+				// playing card
+				game.sendAction(new HeartsPlayAction(this, selectedCard));
+
 			} else {
-				selectedCard = null;
+				// Selection / deselection of cards
+				int handIdx = (int) ((hand.size()) * tx / width);
+				if (ty > height - (height / 3)
+						&& !(hand.get(handIdx) == selectedCard)) {// in bounds
+																	// vertically
+					selectedCard = hand.get(handIdx);
+				} else {
+					selectedCard = null;
+				}
 			}
 		}
 	}
@@ -267,15 +259,15 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	}
 
 	private void drawCards(Canvas g) {
-		currentspacing = dummyCards.size();
-		for (int i = 0; i < dummyCards.size(); i++) {
-			if (selectedCard != null && dummyCards.get(i).equals(selectedCard)) {
-				drawSelectedCard(g, dummyCards.get(i), i);
+		currentspacing = hand.size();
+		for (int i = 0; i < hand.size(); i++) {
+			if (selectedCard != null && hand.get(i).equals(selectedCard)) {
+				drawSelectedCard(g, hand.get(i), i);
 			} else {
 				RectF r = new RectF((width / currentspacing) * i,
 						(height - (height / 3)), (width / currentspacing) * i
 								+ 150, height);
-				dummyCards.get(i).drawOn(g, r);
+				hand.get(i).drawOn(g, r);
 			}
 		}
 	}
@@ -286,12 +278,12 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		}
 		paint.setColor(Color.YELLOW);
 		RectF highlight = new RectF((width / currentspacing) * loc - 1,
-				(height - (height / 3)) - 101, (width / currentspacing) * loc
-						+ 151, height - 99);
+				(height - (height / 3)) - 21, (width / currentspacing) * loc
+						+ 151, height - 19);
 		g.drawRect(highlight, paint);
 		RectF r = new RectF((width / currentspacing) * loc,
-				(height - (height / 3)) - 100, (width / currentspacing) * loc
-						+ 150, height - 100);
+				(height - (height / 3)) - 20, (width / currentspacing) * loc
+						+ 150, height - 20);
 		c.drawOn(g, r);
 	}
 
@@ -300,23 +292,14 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			return;
 		}
 		Card[] trick = state.getCurrentTrick();
-		// TEMP///
-		trick[0] = new Card(Rank.ACE, Suit.Spade);
-		trick[1] = new Card(Rank.QUEEN, Suit.Spade);
-		trick[2] = new Card(Rank.SIX, Suit.Spade);
-		trick[3] = new Card(Rank.ACE, Suit.Heart);
-		/////////
 		for (int i = 0; i < trick.length; i++) {
 			if (trick[i] != null) {
 				RectF r = new RectF((width / 5) + i * (width - (2 * width / 5))
-						/ 4 + 20, height / 4, (width / 5) + i * (width - (2 * width / 5))
-						/4 + 170, height - (3 * height / 8) - 20);
+						/ 4 + 20, height / 4, (width / 5) + i
+						* (width - (2 * width / 5)) / 4 + 170, height
+						- (3 * height / 8) - 20);
 				trick[i].drawOn(g, r);
 			}
 		}
-	}
-
-	public int getPlayerNumber() {
-		return playerNum;
 	}
 }
