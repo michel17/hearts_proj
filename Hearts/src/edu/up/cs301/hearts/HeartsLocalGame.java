@@ -97,10 +97,27 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	protected boolean makeMove(GameAction action) {
 		// TODO Auto-generated method stub
 		GamePlayer p;
+		boolean tf;
+		//check if it's a HeartsPlayAction
 		if(action instanceof HeartsPlayAction){
+			//Will add
+			//if(state.getSubstate == WAIT_PLAY)
+			//Once we get substates up and running
 			p = action.getPlayer();
+			
 			if(p instanceof HeartsHumanPlayer){
-				if(canMove((((HeartsHumanPlayer)p).getPlayerNumber())));
+				
+				if(canMove((((HeartsHumanPlayer)p).getPlayerNumber()))){
+					
+					tf = state.addCardToTrick(((HeartsPlayAction) action).PlayedCard);
+					if(tf == true){
+						sendUpdatedStateTo(p);
+						return true;
+					}
+					else{
+						return false;
+					}
+				}
 			}
 		}
 		return false;

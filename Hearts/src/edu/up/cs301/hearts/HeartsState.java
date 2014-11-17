@@ -88,6 +88,28 @@ public class HeartsState extends GameState {
 		return;
 	}
 	
+	/**
+	 * addCardToTrick
+	 * 
+	 * adds a card to the next open slot in the currentTrick array.
+	 * Returns true if we were able to find an open slot, false if we could not
+	 * @param c
+	 * @return
+	 */
+	public boolean addCardToTrick(Card c){
+		for(int i = 0; i < currentTrick.length; i++){
+			if(currentTrick[i] == null){
+				currentTrick[i] = c;
+				return true;
+			}
+			else{
+				i++;
+			}
+			
+		}
+		return false;
+	}
+	
 	public void setTurnIdx(int i){
 		if(i == -1){
 			turnIdx++;
