@@ -16,7 +16,13 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	HeartsState state;
 	Card[] deck;
 	int turnIdx;
+	ArrayList<GamePlayer> TrickOrder = new ArrayList<GamePlayer>();
+	private Suit ledSuit = null;
+	private static final int INCREMENT_TURN = -1;
+	private static final int ACE_VALUE = 14;
+	
 
+	
 	public HeartsLocalGame() {
 		super();
 		int count = 0;
@@ -107,7 +113,6 @@ public class HeartsLocalGame extends LocalGame implements Game {
 
 	@Override
 	protected boolean makeMove(GameAction action) {
-		// TODO Auto-generated method stub
 		GamePlayer p;
 		boolean tf;
 		if (action instanceof HeartsPlayAction) {
@@ -117,13 +122,17 @@ public class HeartsLocalGame extends LocalGame implements Game {
 				if (players[i].equals(p)) {
 					if (canMove(i) == true) {
 						Card[] trick = state.getCurrentTrick();
-						Suit ledSuit = null;
+						ledSuit = null;
 						for (int j = 0; j < trick.length; j++) {
+							//if the spot is open, check if valid and add card
 							if (trick[j] == null) {
 								if (isValidPlay(act.getPlayedCard(),i,ledSuit)) {
 									tf = state.addCardToTrick(act.PlayedCard);
 									if(tf == true){
-										sendUpdatedStateTo(p);
+										checkTrick();
+										for(GamePlayer player: players){
+											sendUpdatedStateTo(player);
+										}
 										return true;
 									}
 									else{
@@ -132,11 +141,12 @@ public class HeartsLocalGame extends LocalGame implements Game {
 								}
 								break;
 							}
-							else if (j == 0) {
+							
+							if (j == 0) {
 								ledSuit = act.getPlayedCard().getSuit();
 							}
 						}
-						setTurnIdx(-1);
+						setTurnIdx(INCREMENT_TURN);
 						return true;
 					}
 					break;
@@ -192,4 +202,46 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		}
 		return false;
 	}
+	
+	private boolean checkTrick(){
+		Card[] trickCards;
+		Card highCard = null;
+		int winnerIndex = (turnIdx + 1);
+		int realWinner = -1;
+		int points = 0;
+		trickCards = state.getCurrentTrick();
+		//if the trick is full, find the winner
+		if(trickCards[3] != null){
+			
+			for(int i = 0; i < trickCards.length; i++){
+				//This may or may not work, I don't know how comparing suits works with '=='
+				//Adding shortname should fix that
+				if(trickCards[i].getSuit().shortName() == ledSuit.shortName());{
+					
+					if(highCard == null || trickCards[i].getRank().value(ACE_VALUE) > highCard.getRank().value(ACE_VALUE)){
+						realWinner = winnerIndex;
+						highCard = trickCards[i];
+					}
+					if(trickCards[i].getSuit().shortName() == ("H").charAt(0)){
+						points = points + trickCards[i].getRank().value(ACE_VALUE);
+					}
+					if(trickCards[i].shortName().equals("QS")){
+						points = points + 13;
+					}
+				}
+				
+				winnerIndex = ((winnerIndex + 1) % 4);
+			}
+			//WE HAVE WINNER
+			//TODO ADD GIVING POINTS TO THE WINNER HERE
+			state.setHandScore(realWinner, points);
+		}
+		return false;
+	}
+	
+// THINK ON YOUR SINS
+//	private int reverseTurnIndex(){
+//		turnIdx = ((turnIdx + 3) % 4);
+//		return turnIdx;
+//	}
 }

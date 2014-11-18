@@ -156,4 +156,8 @@ public class HeartsState extends GameState {
 		}
 		return newDeal;
 	}
+	
+	public void setHandScore(int player, int score){
+		handScores[player] = score;
+	}
 }
