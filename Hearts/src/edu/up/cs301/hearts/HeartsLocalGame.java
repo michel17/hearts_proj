@@ -30,6 +30,8 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		String suit = null;
 		String rank;
 		String newCard;
+		//Creates a sorted deck
+		//Goes from 0 - 3 for suit then 2 - 14 for rank
 		for (int i = 0; i < 4; i++) {
 			switch (i) {
 			case 0:
@@ -48,6 +50,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 				suit = "C";
 				break;
 			}
+			
 			for (int j = 2; j < 15; j++) {
 				switch (j) {
 				case 10:
@@ -105,6 +108,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	protected String checkIfGameOver() {
 		for (int i = 0; i < state.getNumPlayers(); i++) {
 			if (state.getOverallScore(i) >= 100) {
+				//THIS IS WRONG
 				return this.playerNames[i] + " is teh winrar";
 			}
 		}
