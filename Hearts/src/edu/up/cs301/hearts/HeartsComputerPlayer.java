@@ -42,17 +42,29 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 
 	@Override
 	protected void timerTicked() {
+		
+		//So if the game is null what are we suposed to do?
+		//Right now this doesn't really do anything
 		if (game != null && game instanceof HeartsLocalGame) {
 
 		}
 		Card[] trick = state.getCurrentTrick();
 		Suit leadSuit = null;
+		
+		//If the first card of the trick isn't null, set the suit to that card's suit
 		if (trick[0] != null) {
 			leadSuit = trick[0].getSuit();
+		//All code in this else statement would get skipped whenever the computer isn't first
+		//Meaning it would set ledsuit and then just end without sending any cards
+		//If the computer were first it would just choose a random card,
+		//But on any other turn it won't even get the chance to play
 		} else {
+			//randomly picks a card
 			ArrayList<Card> whiteList = new ArrayList<Card>();
 			Collections.copy(whiteList, hand);
 			Card currentCard = whiteList.get((int) (Math.random() * hand.size()));
+			//if it got here with ledsuit null, it skips it and just plays a random card
+			//But it can't get here when ledsuit isn't null to play on any other turn
 			while (currentCard.getSuit() == Suit.Heart
 					|| (currentCard.getSuit() != leadSuit && leadSuit != null)) {
 				if (state.isHeartsBroken()) {
