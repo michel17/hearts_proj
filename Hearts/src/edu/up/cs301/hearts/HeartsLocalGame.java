@@ -81,6 +81,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		}
 		Card[][] deal = createNewDeal();
 		state = new HeartsState(deal, new int[4], new int[4], new Card[4], false);
+		state.clearTrick();
 	}
 
 	@Override
@@ -136,12 +137,20 @@ public class HeartsLocalGame extends LocalGame implements Game {
 								if (isValidPlay(act.getPlayedCard(),i,ledSuit)) {
 									tf = state.addCardToTrick(act.PlayedCard);
 									if(tf == true){
-										checkTrick();
-										for(GamePlayer player: players){
 											setTurnIdx(INCREMENT_TURN);
-											state.setTurnIdx(turnIdx);
-											sendUpdatedStateTo(player);
+										if (checkTrick()) {
+											//manually push new states so the player can see the fourth card
+											for (GamePlayer play : players) {
+												play.sendInfo(state);
+											}
+											try {
+												Thread.sleep(1000);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+											state.clearTrick();
 										}
+										return true;
 									}
 									else{
 										return false;
@@ -151,7 +160,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 							}
 						}
 						
-						return true;
+						
 					}
 					break;
 				}
@@ -192,13 +201,24 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		else if(i < 4){
 			turnIdx = i;
 		}
-		
+		state.setTurnIdx(turnIdx);
 	}
 	
 	private boolean isValidPlay(Card c, int idx, Suit ledSuit) {
 		ArrayList<Card> playersHand = state.getPlayerHand(idx);
-		if (playersHand.contains(c) && (c.getSuit().equals(ledSuit) || ledSuit == null)) {
+		if (playersHand.contains(c) && (c.getSuit().equals(ledSuit) || ledSuit == null)) {//Playing in suit/leading
 			return true;
+		}
+		else if (playersHand.contains(c)) {
+			boolean suitinhand = false;
+			for (Card test: playersHand) {
+				if (test.getSuit().equals(ledSuit)) {
+					suitinhand = true;
+				}
+			}
+			if (!suitinhand) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -235,6 +255,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 			//WE HAVE WINNER
 			//TODO ADD GIVING POINTS TO THE WINNER HERE
 			state.setHandScore(realWinner, points);
+			setTurnIdx(realWinner-1);
 			return true;
 		}
 		return false;

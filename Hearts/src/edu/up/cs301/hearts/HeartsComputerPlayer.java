@@ -33,9 +33,8 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		}
 		//attempt move
 		
-		sleep(1000);
+		sleep(100);
 		if (game != null && game instanceof HeartsLocalGame) {
-			Log.i("Computer Player",name + " sending move");
 			game.sendAction(new HeartsPlayAction(this, dumbAI()));
 		}
 
@@ -132,7 +131,7 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 	
 	//We're going stone age basic. Try a random card and play it. Ignore everything else.
 	private Card dumbAI() {
-		return hand.get((int) Math.random()*(hand.size()));
+		return hand.get((int) (Math.random()*(hand.size())));
 	}
 
 }
