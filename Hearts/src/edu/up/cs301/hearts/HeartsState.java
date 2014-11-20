@@ -13,8 +13,8 @@ public class HeartsState extends GameState {
 	public final int WAIT_RECEIVE = 2;
 	public final int WAIT_PLAY = 3;
 	public final int WAIT_OVER = 4;
-	public final int NUM_PLAYERS = 4;
-	private final int MAX_CARDS = 13;
+	public static final int NUM_PLAYERS = 4;
+	public static final int MAX_CARDS = 13;
 	
 	//instance variables
 	private int subState;
@@ -24,6 +24,7 @@ public class HeartsState extends GameState {
 	private Card[][] currentHands;
 	private boolean heartsBroken;
 	private int turnIdx;
+	private boolean firstTurn;
 	
 	public HeartsState(Card[][] ncurrentHands, int[] noverallScores, int[] nhandScores, Card[] ntrick, boolean nbroken) {
 		overallScores = noverallScores;
@@ -31,6 +32,7 @@ public class HeartsState extends GameState {
 		currentTrick = ntrick;
 		currentHands = ncurrentHands;
 		heartsBroken = nbroken;
+		firstTurn = true;
 	}
 	
 	public HeartsState(HeartsState orig, int forPlayer) {
@@ -234,5 +236,12 @@ public class HeartsState extends GameState {
 		for (int i = 0; i < currentTrick.length; i++) {
 			currentTrick[i] = null;
 		}
+	}
+	
+	public void setFirstTurn(boolean set) {
+		firstTurn = set;
+	}
+	public boolean getFirstTurn() {
+		return firstTurn;
 	}
 }

@@ -80,6 +80,20 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		Card[][] deal = createNewDeal();
 		state = new HeartsState(deal, new int[4], new int[4], new Card[4],
 				false);
+		boolean flag = false;
+		// set starting player
+		for (int j = 0; j < 4; j++) {
+			for (int k = 0; k < 13; k++) {
+				if (deal[j][k].equals(new Card(Rank.TWO, Suit.Club))) {
+					setTurnIdx(j);
+					flag = true;
+					break;
+				}
+			}
+			if (flag) {
+				break;
+			}
+		}
 		state.clearTrick();
 	}
 
@@ -155,7 +169,8 @@ public class HeartsLocalGame extends LocalGame implements Game {
 					if (canMove(i) == true) {
 
 						Card[] trick = state.getCurrentTrick();
-						Suit ledSuit = trick[0] == null ? null : trick[0].getSuit();
+						Suit ledSuit = trick[0] == null ? null : trick[0]
+								.getSuit();
 
 						for (int j = 0; j < trick.length; j++) {
 
@@ -258,6 +273,10 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	 */
 	private boolean isValidPlay(Card c, int idx, Suit ledSuit) {
 		ArrayList<Card> playersHand = state.getPlayerHand(idx);
+		if (state.getFirstTurn() && !c.equals(new Card(Rank.TWO,Suit.Club))) {//Full hand, first trick of hand
+			state.setFirstTurn(false);	
+			return false;
+		}
 		if (playersHand.contains(c)
 				&& (c.getSuit().equals(ledSuit) || ledSuit == null)) {// Playing
 																		// in
@@ -287,17 +306,20 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	private boolean checkTrick() {
 		Card[] trickCards;
 		trickCards = state.getCurrentTrick();
-		//if the trick is full, find the winner
-		if(trickCards[3] != null){
+		// if the trick is full, find the winner
+		if (trickCards[3] != null) {
 			Card highCard = null;
 			int winnerIndex = turnIdx;
 			int realWinner = -1;
 			int points = 0;
 			Suit ledSuit = trickCards[0].getSuit();
-			for(int i = 0; i < trickCards.length; i++){
-				//This may or may not work, I don't know how comparing suits works with '=='
-				if(trickCards[i].getSuit().equals(ledSuit)) {
-					if(highCard == null || (trickCards[i].getRank().value(ACE_VALUE) > highCard.getRank().value(ACE_VALUE))){
+			for (int i = 0; i < trickCards.length; i++) {
+				// This may or may not work, I don't know how comparing suits
+				// works with '=='
+				if (trickCards[i].getSuit().equals(ledSuit)) {
+					if (highCard == null
+							|| (trickCards[i].getRank().value(ACE_VALUE) > highCard
+									.getRank().value(ACE_VALUE))) {
 						realWinner = winnerIndex;
 						highCard = trickCards[i];
 					}
@@ -305,7 +327,8 @@ public class HeartsLocalGame extends LocalGame implements Game {
 						points = points
 								+ trickCards[i].getRank().value(ACE_VALUE);
 					}
-					if (trickCards[i].getRank().equals(Rank.QUEEN) && trickCards[i].getSuit().equals(Suit.Spade)) {
+					if (trickCards[i].getRank().equals(Rank.QUEEN)
+							&& trickCards[i].getSuit().equals(Suit.Spade)) {
 						points = points + 13;
 					}
 				}
@@ -357,7 +380,23 @@ public class HeartsLocalGame extends LocalGame implements Game {
 					}
 				}
 			}
-			state = new HeartsState(createNewDeal(), state.getOverallScores(), state.getHandScores(), new Card[players.length], false);
+			state = new HeartsState(createNewDeal(), state.getOverallScores(),
+					state.getHandScores(), new Card[players.length], false);
+			boolean flag = false;
+			Card[][] deal = state.getCurrentDeal();
+			// set starting player
+			for (int j = 0; j < 4; j++) {
+				for (int k = 0; k < 13; k++) {
+					if (deal[j][k].equals(new Card(Rank.TWO, Suit.Club))) {
+						setTurnIdx(j);
+						flag = true;
+						break;
+					}
+				}
+				if (flag) {
+					break;
+				}
+			}
 			return true;
 		}
 		return false;
