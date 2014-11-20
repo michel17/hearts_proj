@@ -23,6 +23,7 @@ public class HeartsState extends GameState {
 	private Card[] currentTrick;
 	private Card[][] currentHands;
 	private boolean heartsBroken;
+	private int turnIdx;
 	
 	public HeartsState(Card[][] ncurrentHands, int[] noverallScores, int[] nhandScores, Card[] ntrick, boolean nbroken) {
 		overallScores = noverallScores;
@@ -122,7 +123,7 @@ public class HeartsState extends GameState {
 		for(int i = 0; i < currentTrick.length; i++){
 			if(currentTrick[i] == null){
 				currentTrick[i] = c;
-				removeCard(c);
+				currentHands = removeCard(c);
 				return true;
 			}
 			else{
@@ -130,9 +131,7 @@ public class HeartsState extends GameState {
 			}
 		}
 		return false;
-	}
-	
-		
+	}	
 	
 	public int[] getOverallScores() {
 		return overallScores;
@@ -159,5 +158,16 @@ public class HeartsState extends GameState {
 	
 	public void setHandScore(int player, int score){
 		handScores[player] = score;
+	}
+	
+	public void setOverallScore(int player, int score) {
+		overallScores[player] = score;
+	}
+	
+	public int getTurnIdx() {
+		return turnIdx;
+	}
+	public void setTurnIdx(int i) {
+		turnIdx = i;
 	}
 }

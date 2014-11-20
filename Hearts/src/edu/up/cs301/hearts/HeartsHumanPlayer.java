@@ -91,7 +91,6 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
 	@Override
 	public void receiveInfo(GameInfo info) {
-		System.out.println(info.toString());
 		Log.i("HeartsHumanPlayer", "receiving updated state (" + info.getClass() + ")");
 		if (info instanceof IllegalMoveInfo || info instanceof NotYourTurnInfo) {
 			// if we had an out-of-turn or illegal move, flash the screen

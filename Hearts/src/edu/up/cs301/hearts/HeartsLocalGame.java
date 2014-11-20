@@ -3,6 +3,8 @@ package edu.up.cs301.hearts;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import android.util.Log;
+
 import edu.up.cs301.card.Card;
 import edu.up.cs301.card.Suit;
 import edu.up.cs301.game.Game;
@@ -117,6 +119,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 
 	@Override
 	protected boolean makeMove(GameAction action) {
+		Log.i("MOVE","MOVE REQUESTED");
 		GamePlayer p;
 		boolean tf;
 		if (action instanceof HeartsPlayAction) {
@@ -126,7 +129,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 				if (players[i].equals(p)) {
 					if (canMove(i) == true) {
 						Card[] trick = state.getCurrentTrick();
-						ledSuit = null;
+						ledSuit = trick[0] == null ? null : trick[0].getSuit();
 						for (int j = 0; j < trick.length; j++) {
 							//if the spot is open, check if valid and add card
 							if (trick[j] == null) {
@@ -135,9 +138,10 @@ public class HeartsLocalGame extends LocalGame implements Game {
 									if(tf == true){
 										checkTrick();
 										for(GamePlayer player: players){
+											setTurnIdx(INCREMENT_TURN);
+											state.setTurnIdx(turnIdx);
 											sendUpdatedStateTo(player);
 										}
-										return true;
 									}
 									else{
 										return false;
@@ -145,12 +149,8 @@ public class HeartsLocalGame extends LocalGame implements Game {
 								}
 								break;
 							}
-							
-							if (j == 0) {
-								ledSuit = act.getPlayedCard().getSuit();
-							}
 						}
-						setTurnIdx(INCREMENT_TURN);
+						
 						return true;
 					}
 					break;
@@ -192,16 +192,12 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		else if(i < 4){
 			turnIdx = i;
 		}
+		
 	}
 	
 	private boolean isValidPlay(Card c, int idx, Suit ledSuit) {
 		ArrayList<Card> playersHand = state.getPlayerHand(idx);
-		if (playersHand.contains(c)) {
-			for (Card test: playersHand) {
-				if (test.getSuit().equals(ledSuit)) {
-					return false;
-				}
-			}
+		if (playersHand.contains(c) && (c.getSuit().equals(ledSuit) || ledSuit == null)) {
 			return true;
 		}
 		return false;
@@ -239,6 +235,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 			//WE HAVE WINNER
 			//TODO ADD GIVING POINTS TO THE WINNER HERE
 			state.setHandScore(realWinner, points);
+			return true;
 		}
 		return false;
 	}
@@ -248,4 +245,30 @@ public class HeartsLocalGame extends LocalGame implements Game {
 //		turnIdx = ((turnIdx + 3) % 4);
 //		return turnIdx;
 //	}
+	private boolean isHandOver() {
+		//This method will only be called at the end of a hand, so let's assume all players have the same number of cards
+		if (state.getPlayerHand(0).isEmpty()) {
+			//Hand is over, compile scores together
+			boolean moonshot = false;
+			int i;
+			for (i = 0; i < players.length; i++) {
+				int score = state.getHandScore(i);
+				if (score == 26) {
+					moonshot = true;
+					break;
+				}
+				state.setOverallScore(i, state.getOverallScore(i) + score);
+			}
+			//If someone shot the moon, i now holds their index
+			if (moonshot == true) {
+				for (int j = 0; j < players.length; j++) {
+					if (i != j) {
+						state.setOverallScore(j, state.getOverallScore(j) + 26);
+					}
+				}
+			}
+			return true;
+		}
+		return false;
+	}
 }
