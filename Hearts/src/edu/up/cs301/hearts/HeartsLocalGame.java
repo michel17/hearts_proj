@@ -297,7 +297,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 			for(int i = 0; i < trickCards.length; i++){
 				//This may or may not work, I don't know how comparing suits works with '=='
 				//Adding shortname should fix that
-				if(trickCards[i].getSuit().equals(ledSuit)){
+				if(trickCards[i].getSuit().equals(ledSuit));{
 					
 					if(highCard == null || (trickCards[i].getRank().value(ACE_VALUE) > highCard.getRank().value(ACE_VALUE))){
 						realWinner = winnerIndex;
