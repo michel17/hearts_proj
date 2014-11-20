@@ -126,9 +126,6 @@ public class HeartsState extends GameState {
 				currentHands = removeCard(c);
 				return true;
 			}
-			else{
-				i++;
-			}
 		}
 		return false;
 	}	
@@ -187,7 +184,9 @@ public class HeartsState extends GameState {
 	 * the number the player's score will be set to 
 	 */
 	public void setHandScore(int player, int score){
-		handScores[player] = score;
+		if (player >= 0 && player <= 3) {
+			handScores[player] = score;
+		}
 	}
 	
 	/**
@@ -228,6 +227,12 @@ public class HeartsState extends GameState {
 		}
 		else if (i < 4){
 			turnIdx = i;
+		}
+	}
+	
+	public void clearTrick() {
+		for (int i = 0; i < currentTrick.length; i++) {
+			currentTrick[i] = null;
 		}
 	}
 }

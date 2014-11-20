@@ -141,7 +141,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
 		paint.setTextSize(20);
 		for (int i = 0; i < scorePoint.size(); i++) {
-			g.drawText("Score: " + state.getOverallScore(i), scorePoint.get(i).x, scorePoint.get(i).y, paint);
+			g.drawText("Score: 0", scorePoint.get(i).x, scorePoint.get(i).y, paint);
 			if (i == 3) {
 				paint.setColor(Color.YELLOW);
 				paint.setTextSize(30);
