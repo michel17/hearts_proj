@@ -134,7 +134,11 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		if (hand.isEmpty()) {
 			return null;
 		}
-		return hand.get((int) (Math.random()*(hand.size())));
+		Card c = hand.get((int) (Math.random()*(hand.size())));
+		while (((HeartsLocalGame) game).isValidPlay(c, playerNum, state.getCurrentTrick()[0] == null ? null : state.getCurrentTrick()[0].getSuit())) {
+			c = hand.get((int) (Math.random()*(hand.size())));
+		}	
+	return c;
 	}
 
 }

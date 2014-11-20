@@ -224,12 +224,7 @@ public class HeartsState extends GameState {
 	 * 		The turn to set turn index to
 	 */
 	public void setTurnIdx(int i) {
-		if(i == -1){
-			turnIdx = ((turnIdx + 1) % 4);
-		}
-		else if (i < 4){
-			turnIdx = i;
-		}
+		turnIdx = i;
 	}
 	
 	public void clearTrick() {

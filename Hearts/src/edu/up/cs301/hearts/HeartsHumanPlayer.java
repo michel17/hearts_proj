@@ -136,22 +136,41 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		width = g.getWidth();
 		height = g.getHeight();
 
-		if (!hasChecked) pointUpdate();
-		paint.setColor(Color.WHITE);
+		if (!hasChecked) {
+			pointUpdate();
+		}
 		paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
-		paint.setTextSize(20);
+		int j = 0;
 		for (int i = 0; i < scorePoint.size(); i++) {
-				g.drawText("Score: 0", scorePoint.get(i).x, scorePoint.get(i).y, paint);
-			if (i == 3) {
+			if (state == null) {
+				return;
+			}
+			if (state.getTurnIdx() == i) {
+				paint.setUnderlineText(true);
+			}
+			else {
+				paint.setUnderlineText(false);
+			}
+			if (i == playerNum) {
 				paint.setColor(Color.YELLOW);
 				paint.setTextSize(30);
-				g.drawText("Filthy Casual", scorePoint.get(i).x - 70, scorePoint.get(i).y - 30, paint);
+				g.drawText(name, scorePoint.get(3).x - 70, scorePoint.get(3).y - 30, paint);
+				paint.setColor(Color.WHITE);
+				paint.setTextSize(20);	
+				g.drawText("Score: " + state.getOverallScore(i) + " (" + state.getHandScore(i) + ")", scorePoint.get(3).x, scorePoint.get(3).y, paint);
 			} else {
-				g.drawText("Player " + String.valueOf(alphabet[i]), scorePoint.get(i).x,
-						scorePoint.get(i).y - 30, paint);
+				paint.setColor(Color.WHITE);
+				paint.setTextSize(20);	
+				g.drawText("Score: " + state.getOverallScore(i) + " (" + state.getHandScore(i) + ")", scorePoint.get(j).x, scorePoint.get(j).y, paint);
+				if (allPlayerNames == null) {
+					return;
+				}
+				g.drawText(allPlayerNames[i], scorePoint.get(j).x,
+						scorePoint.get(j).y - 30, paint);
+				j++;
 			}
 		}
-
+		paint.setUnderlineText(false);
 		Rect r = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)),
 				(int) (width - width / 5), (int) ((height - height / 4) - (height / 8)));
 		paint.setStyle(Paint.Style.FILL);

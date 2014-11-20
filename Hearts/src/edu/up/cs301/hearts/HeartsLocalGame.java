@@ -272,7 +272,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	 *            the leading suit of the trick
 	 * @return true if the play is valid and false is not
 	 */
-	private boolean isValidPlay(Card c, int idx, Suit ledSuit) {
+	public boolean isValidPlay(Card c, int idx, Suit ledSuit) {
 		ArrayList<Card> playersHand = state.getPlayerHand(idx);
 		if (state.getFirstTurn() && !c.equals(new Card(Rank.TWO,Suit.Club))) {//Full hand, first trick of hand	
 			return false;
@@ -323,21 +323,20 @@ public class HeartsLocalGame extends LocalGame implements Game {
 						realWinner = winnerIndex;
 						highCard = trickCards[i];
 					}
-					if (trickCards[i].getSuit().equals(Suit.Heart)) {
-						points = points
-								+ trickCards[i].getRank().value(ACE_VALUE);
-					}
-					if (trickCards[i].getRank().equals(Rank.QUEEN)
-							&& trickCards[i].getSuit().equals(Suit.Spade)) {
-						points = points + 13;
-					}
+					
 				}
-
+				if (trickCards[i].getSuit().equals(Suit.Heart)) {
+					points++;
+				}
+				else if (trickCards[i].getRank().equals(Rank.QUEEN)
+						&& trickCards[i].getSuit().equals(Suit.Spade)) {
+					points = points + 13;
+				}
 				winnerIndex = ((winnerIndex + 1) % 4);
 			}
 			// WE HAVE WINNER
 			// TODO ADD GIVING POINTS TO THE WINNER HERE
-			state.setHandScore(realWinner, points);
+			state.setHandScore(realWinner, state.getHandScore(realWinner) + points);
 			setTurnIdx(realWinner);
 			return true;
 		}
@@ -381,7 +380,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 				}
 			}
 			state = new HeartsState(createNewDeal(), state.getOverallScores(),
-					state.getHandScores(), new Card[players.length], false);
+					new int[players.length], new Card[players.length], false);
 			boolean flag = false;
 			Card[][] deal = state.getCurrentDeal();
 			// set starting player
