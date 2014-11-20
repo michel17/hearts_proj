@@ -31,7 +31,7 @@ import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
 public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
 	// our game state
-	protected HeartsState state = null;
+	protected HeartsState state;
 
 	// our activity
 	private Activity myActivity;
