@@ -131,6 +131,9 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 	
 	//We're going stone age basic. Try a random card and play it. Ignore everything else.
 	private Card dumbAI() {
+		if (hand.isEmpty()) {
+			return null;
+		}
 		return hand.get((int) (Math.random()*(hand.size())));
 	}
 
