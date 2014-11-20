@@ -133,14 +133,34 @@ public class HeartsState extends GameState {
 		return false;
 	}	
 	
+	/**
+	 * getOverallScores
+	 * 
+	 * gets the overallScores array for the player that calls it
+	 * @return the overallScoresArray
+	 */
 	public int[] getOverallScores() {
 		return overallScores;
 	}
 	
+	/**
+	 * getHandScores
+	 * 
+	 * returns the handScores array to the player calling it
+	 * @return a copy of the handScores array
+	 */
 	public int[] getHandScores() {
 		return handScores;
 	}
 	
+	/**
+	 * removeCard
+	 * 
+	 * Removes the given card from our full deck for dealing
+	 * 
+	 * @param del The card that needs to be removed
+	 * @return the deck without the removed card in it
+	 */
 	private Card[][] removeCard(Card del) {
 		Card[][] newDeal = new Card[4][13];
 		for (int i = 0; i < newDeal.length; i++) {
@@ -156,10 +176,30 @@ public class HeartsState extends GameState {
 		return newDeal;
 	}
 	
+	/**
+	 * setHandScore
+	 * 
+	 * Sets the "hand score" for the given player to the given value
+	 * 
+	 * @param player 
+	 * the id number of the player whose score is being changed
+	 * @param score 
+	 * the number the player's score will be set to 
+	 */
 	public void setHandScore(int player, int score){
 		handScores[player] = score;
 	}
 	
+	/**
+	 * setOverallScore
+	 * 
+	 * Sets the overall game score of the given player to the given score
+	 * 
+	 * @param player
+	 * the id of the player whose score will be changed
+	 * @param score
+	 * the number
+	 */
 	public void setOverallScore(int player, int score) {
 		overallScores[player] = score;
 	}

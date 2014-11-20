@@ -82,7 +82,10 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		Card[][] deal = createNewDeal();
 		state = new HeartsState(deal, new int[4], new int[4], new Card[4], false);
 	}
-
+	
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	protected void sendUpdatedStateTo(GamePlayer p) {
 		if (p == null) {
@@ -96,7 +99,10 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		}
 		p.sendInfo(new HeartsState(state,playerIdx));
 	}
-
+	
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	protected boolean canMove(int playerIdx) {
 		if (playerIdx == turnIdx) {
@@ -105,18 +111,30 @@ public class HeartsLocalGame extends LocalGame implements Game {
 			return false;
 		}
 	}
-
+	
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	protected String checkIfGameOver() {
+		int winnerNum = 0;
 		for (int i = 0; i < state.getNumPlayers(); i++) {
 			if (state.getOverallScore(i) >= 100) {
-				//THIS IS WRONG
-				return this.playerNames[i] + " is teh winrar";
+				//THIS IS NOT WRONG ANYMORE
+				for(int j =0; i<players.length;j++){
+					if((state.getOverallScores())[j] >= (state.getOverallScores())[winnerNum]){
+						winnerNum = j;
+					}
+				}
+				return this.playerNames[winnerNum] + " is teh winrar";
 			}
 		}
 		return null;
 	}
-
+	
+	/**
+	 *{@inheritDoc}
+	 */
 	@Override
 	protected boolean makeMove(GameAction action) {
 		Log.i("MOVE","MOVE REQUESTED");
@@ -125,18 +143,27 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		if (action instanceof HeartsPlayAction) {
 			HeartsPlayAction act = (HeartsPlayAction) action;
 			p = action.getPlayer();
+			
 			for (int i = 0; i < players.length; i++) {
+				
 				if (players[i].equals(p)) {
+					
 					if (canMove(i) == true) {
+						
 						Card[] trick = state.getCurrentTrick();
 						ledSuit = trick[0] == null ? null : trick[0].getSuit();
+						
 						for (int j = 0; j < trick.length; j++) {
+							
 							//if the spot is open, check if valid and add card
 							if (trick[j] == null) {
+								
 								if (isValidPlay(act.getPlayedCard(),i,ledSuit)) {
 									tf = state.addCardToTrick(act.PlayedCard);
+									
 									if(tf == true){
 										checkTrick();
+										
 										for(GamePlayer player: players){
 											setTurnIdx(INCREMENT_TURN);
 											state.setTurnIdx(turnIdx);
@@ -162,6 +189,15 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		return false;
 	}
 	
+	/**
+	 * createNewDeal
+	 * 
+	 * creates a new deal of cards
+	 * Requires import statements for great depression and FDR to run
+	 * 
+	 * @return
+	 * 		the new deal of cards for the next hand
+	 */
 	private Card[][] createNewDeal() {
 		Card[][] deal = new Card[4][13];
 		//essentially, pick a random order to attempt dealing cards in
@@ -195,6 +231,20 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		
 	}
 	
+	/**
+	 * isValidPlay
+	 * 
+	 * checks if the chosen card is a valid play
+	 * 
+	 * @param c
+	 * 		the card chosen by the player to be played
+	 * @param idx
+	 * 		the index of the player asking to play the card
+	 * @param ledSuit
+	 * 		the leading suit of the trick
+	 * @return
+	 * 		true if the play is valid and false is not
+	 */
 	private boolean isValidPlay(Card c, int idx, Suit ledSuit) {
 		ArrayList<Card> playersHand = state.getPlayerHand(idx);
 		if (playersHand.contains(c) && (c.getSuit().equals(ledSuit) || ledSuit == null)) {
@@ -203,6 +253,14 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		return false;
 	}
 	
+	/**
+	 * checkTrick
+	 * 
+	 * checks to see if the trick is over and awards points if it is
+	 * 
+	 * @return
+	 * 		true if the trick is over, false if it isn't
+	 */
 	private boolean checkTrick(){
 		Card[] trickCards;
 		Card highCard = null;
@@ -245,6 +303,15 @@ public class HeartsLocalGame extends LocalGame implements Game {
 //		turnIdx = ((turnIdx + 3) % 4);
 //		return turnIdx;
 //	}
+	
+	/**
+	 * isHandOver
+	 * 
+	 * checks if the hand is over
+	 * 
+	 * @return 
+	 * 		true if the hand is over, false if it isn't
+	 */
 	private boolean isHandOver() {
 		//This method will only be called at the end of a hand, so let's assume all players have the same number of cards
 		if (state.getPlayerHand(0).isEmpty()) {
