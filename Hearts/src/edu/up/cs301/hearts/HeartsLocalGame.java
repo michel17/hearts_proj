@@ -178,6 +178,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 							if (trick[j] == null) {
 
 								if (isValidPlay(act.getPlayedCard(), i, ledSuit)) {
+									state.setFirstTurn(false);
 									tf = state.addCardToTrick(act.PlayedCard);
 
 									if (tf == true) {
@@ -273,8 +274,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	 */
 	private boolean isValidPlay(Card c, int idx, Suit ledSuit) {
 		ArrayList<Card> playersHand = state.getPlayerHand(idx);
-		if (state.getFirstTurn() && !c.equals(new Card(Rank.TWO,Suit.Club))) {//Full hand, first trick of hand
-			state.setFirstTurn(false);	
+		if (state.getFirstTurn() && !c.equals(new Card(Rank.TWO,Suit.Club))) {//Full hand, first trick of hand	
 			return false;
 		}
 		if (playersHand.contains(c)
