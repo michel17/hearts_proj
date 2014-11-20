@@ -276,7 +276,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 				//Adding shortname should fix that
 				if(trickCards[i].getSuit().shortName() == ledSuit.shortName());{
 					
-					if(highCard == null || trickCards[i].getRank().value(ACE_VALUE) > highCard.getRank().value(ACE_VALUE)){
+					if(highCard == null || (trickCards[i].getRank().value(ACE_VALUE) > highCard.getRank().value(ACE_VALUE))){
 						realWinner = winnerIndex;
 						highCard = trickCards[i];
 					}

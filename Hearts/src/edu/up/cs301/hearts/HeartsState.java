@@ -204,10 +204,30 @@ public class HeartsState extends GameState {
 		overallScores[player] = score;
 	}
 	
+	/**
+	 * getTurnIdx
+	 * 
+	 * @return
+	 * 		the current turn index
+	 */
 	public int getTurnIdx() {
 		return turnIdx;
 	}
+	
+	/**
+	 * setTurnIdx
+	 * 
+	 * sets the turn index to whatever value is passed by i
+	 * 
+	 * @param i
+	 * 		The turn to set turn index to
+	 */
 	public void setTurnIdx(int i) {
-		turnIdx = i;
+		if(i == -1){
+			turnIdx = ((turnIdx + 1) % 4);
+		}
+		else if (i < 4){
+			turnIdx = i;
+		}
 	}
 }
