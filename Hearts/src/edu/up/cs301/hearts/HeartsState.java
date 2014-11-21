@@ -93,9 +93,6 @@ public class HeartsState extends GameState {
 	public boolean isHeartsBroken() {
 		return heartsBroken;
 	}
-	public void setHeartsBroken(boolean b){
-		heartsBroken = b;
-	}
 	public int getNumPlayers() {
 		return NUM_PLAYERS;
 	}

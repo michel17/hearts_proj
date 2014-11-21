@@ -193,10 +193,8 @@ public class HeartsLocalGame extends LocalGame implements Game {
 											} catch (InterruptedException e) {
 												e.printStackTrace();
 											}
-											//CHANGED HERE
 											isHandOver();
 											state.clearTrick();
-											
 										}
 										return true;
 									} else {
@@ -278,24 +276,12 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		if (state.getFirstTurn() && !c.equals(new Card(Rank.TWO,Suit.Club))) {//first trick of hand	
 			return false;
 		}
-		//CHANGED HERE
-		if(state.getCurrentTrick()[0] == null){
-			ledSuit = null;
-		}
-		else{
-			ledSuit = state.getCurrentTrick()[0].getSuit();
-		}
-		if ((playersHand.contains(c)
-				&& (c.getSuit().equals(ledSuit)) || ledSuit == null)) {
-			
-			//if you're starting a new trick with a heart, but hearts aren't broken, return false
-			if(ledSuit == null && c.getSuit().equals(Suit.Heart) && !(state.isHeartsBroken())){
-				return false;									// Playing
+		if (playersHand.contains(c)
+				&& (c.getSuit().equals(ledSuit) || ledSuit == null)) {// Playing in suit/leading
+			if (ledSuit == null && !state.isHeartsBroken() && c.getSuit().equals(Suit.Heart)) {
+				return false;
 			}
-			else{															// in
-																		// suit/leading
-				return true;
-			}
+			return true;
 		} else if (playersHand.contains(c)) {
 			boolean suitinhand = false;
 			for (Card test : playersHand) {
@@ -304,10 +290,6 @@ public class HeartsLocalGame extends LocalGame implements Game {
 				}
 			}
 			if (!suitinhand) {
-				if(!state.isHeartsBroken() && c.getSuit().shortName() == ("H").charAt(0)){
-					state.setHeartsBroken(true);
-					return true;
-				}
 				return true;
 			}
 		}
@@ -415,8 +397,6 @@ public class HeartsLocalGame extends LocalGame implements Game {
 					break;
 				}
 			}
-			//CHANGED HERE
-			state.clearTrick();
 			return true;
 		}
 		return false;
