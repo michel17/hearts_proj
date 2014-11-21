@@ -16,7 +16,8 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 
 	public HeartsComputerPlayer(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
+		getTimer().setInterval(50);
+		getTimer().start();
 	}
 
 	@Override
@@ -25,32 +26,31 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 				"receiving updated state (" + info.getClass() + ")");
 		if (!(info instanceof HeartsState)) {
 			// otherwise, if it's not a game-state message, ignore
-			
 		} else {
 			this.state = (HeartsState) info;
 			hand = state.getPlayerHand(playerNum);
 			Log.i("Computer player", "receiving");
 		}
-		//attempt move
 		
-		sleep(100);
-		if (game != null && game instanceof HeartsLocalGame) {
-			game.sendAction(new HeartsPlayAction(this, dumbAI()));
-		}
-
 	}
 
 	@Override
 	protected void timerTicked() {
-		
+		if (game != null && game instanceof HeartsLocalGame) {
+			// attempt move
+			if (state.getTurnIdx() == playerNum) {//is it our turn?
+				sleep(750);
+				game.sendAction(new HeartsPlayAction(this, dumbAI()));
+			}
+		}
 	}
 
 	public int getPlayerNumber() {
 		return playerNum;
 	}
-	
+
 	private Card smartAI() {
-		
+
 		Card[] trick = state.getCurrentTrick();
 		Suit leadSuit = null;
 
@@ -69,8 +69,7 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		// randomly picks a card
 		ArrayList<Card> whiteList = new ArrayList<Card>();
 		Collections.copy(whiteList, hand);
-		Card currentCard = whiteList
-				.get((int) (Math.random() * hand.size()));
+		Card currentCard = whiteList.get((int) (Math.random() * hand.size()));
 		// if it got here with ledsuit null, it skips it and just plays a
 		// random card
 		// But it can't get here when ledsuit isn't null to play on any
@@ -128,17 +127,18 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		}
 		return currentCard;
 	}
-	
-	//We're going stone age basic. Try a random card and play it. Ignore everything else.
+
+	// We're going stone age basic. Try a random card and play it. Ignore
+	// everything else.
 	private Card dumbAI() {
 		if (hand.isEmpty()) {
 			return null;
 		}
-		Card c = hand.get((int) (Math.random()*(hand.size())));
-		while (((HeartsLocalGame) game).isValidPlay(c, playerNum, state.getCurrentTrick()[0] == null ? null : state.getCurrentTrick()[0].getSuit())) {
-			c = hand.get((int) (Math.random()*(hand.size())));
-		}	
-	return c;
+		Card c = hand.get((int) (Math.random() * (hand.size())));
+		while (!(((HeartsLocalGame) game).isValidPlay(c, playerNum, state.getCurrentTrick()[0] == null ? null : state.getCurrentTrick()[0].getSuit()))) {
+			c = hand.get((int) (Math.random() * (hand.size())));
+		}
+		return c;
 	}
 
 }

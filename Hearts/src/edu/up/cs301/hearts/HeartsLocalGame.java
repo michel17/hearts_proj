@@ -152,10 +152,10 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	 */
 	@Override
 	protected boolean makeMove(GameAction action) {
-		Log.i("MOVE", "MOVE REQUESTED");
 		GamePlayer p;
 		boolean tf;
 		if (action instanceof HeartsPlayAction) {
+			Log.i("MOVE", "MOVE REQUESTED");
 			HeartsPlayAction act = (HeartsPlayAction) action;
 			p = action.getPlayer();
 			if (act.getPlayedCard() == null) {
@@ -274,7 +274,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	 */
 	public boolean isValidPlay(Card c, int idx, Suit ledSuit) {
 		ArrayList<Card> playersHand = state.getPlayerHand(idx);
-		if (state.getFirstTurn() && !c.equals(new Card(Rank.TWO,Suit.Club))) {//Full hand, first trick of hand	
+		if (state.getFirstTurn() && !c.equals(new Card(Rank.TWO,Suit.Club))) {//first trick of hand	
 			return false;
 		}
 		if (playersHand.contains(c)

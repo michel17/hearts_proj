@@ -56,6 +56,7 @@ public class HeartsState extends GameState {
 				}
 			}
 		}
+		turnIdx = orig.getTurnIdx();
 		currentTrick = orig.getCurrentTrick();
 		heartsBroken = orig.isHeartsBroken();
 	}
