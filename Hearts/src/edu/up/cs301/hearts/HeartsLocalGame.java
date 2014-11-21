@@ -19,7 +19,6 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	HeartsState state;
 	Card[] deck;
 	int turnIdx;
-	ArrayList<GamePlayer> TrickOrder = new ArrayList<GamePlayer>();
 	private static final int INCREMENT_TURN = -1;
 	private static final int ACE_VALUE = 14;
 
@@ -135,8 +134,8 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		for (int i = 0; i < state.getNumPlayers(); i++) {
 			if (state.getOverallScore(i) >= 100) {
 				// THIS IS NOT WRONG ANYMORE
-				for (int j = 0; i < players.length; j++) {
-					if ((state.getOverallScores())[j] >= (state
+				for (int j = 0; j < players.length; j++) {
+					if ((state.getOverallScores())[j] <= (state
 							.getOverallScores())[winnerNum]) {
 						winnerNum = j;
 					}
@@ -155,9 +154,9 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		GamePlayer p;
 		boolean tf;
 		if (action instanceof HeartsPlayAction) {
-			Log.i("MOVE", "MOVE REQUESTED");
 			HeartsPlayAction act = (HeartsPlayAction) action;
 			p = action.getPlayer();
+			
 			if (act.getPlayedCard() == null) {
 				return false;
 			}
@@ -165,7 +164,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 			for (int i = 0; i < players.length; i++) {
 
 				if (players[i].equals(p)) {
-
+					Log.i("MOVE", "MOVE REQUESTED BY: " + p.toString());
 					if (canMove(i) == true) {
 
 						Card[] trick = state.getCurrentTrick();
@@ -345,6 +344,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 					
 				}
 				if (trickCards[i].getSuit().equals(Suit.Heart)) {
+					state.setHeartsBroken(true);
 					points++;
 				}
 				else if (trickCards[i].getRank().equals(Rank.QUEEN)

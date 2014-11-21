@@ -57,6 +57,7 @@ public class HeartsState extends GameState {
 			}
 		}
 		turnIdx = orig.getTurnIdx();
+		firstTurn = orig.getFirstTurn();
 		currentTrick = orig.getCurrentTrick();
 		heartsBroken = orig.isHeartsBroken();
 	}
@@ -85,6 +86,9 @@ public class HeartsState extends GameState {
 			copy[i] = currentTrick[i];
 		}
 		return copy;
+	}
+	public void setHeartsBroken(boolean b) {
+		heartsBroken = b;
 	}
 	public boolean isHeartsBroken() {
 		return heartsBroken;

@@ -13,6 +13,8 @@ import edu.up.cs301.game.infoMsg.GameInfo;
 public class HeartsComputerPlayer extends GameComputerPlayer {
 	HeartsState state;
 	ArrayList<Card> hand = new ArrayList<>();
+	int sleepsecs = 750;
+	boolean hasattemptedmove = false;
 
 	public HeartsComputerPlayer(String name) {
 		super(name);
@@ -29,6 +31,7 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		} else {
 			this.state = (HeartsState) info;
 			hand = state.getPlayerHand(playerNum);
+			hasattemptedmove = false;
 			Log.i("Computer player", "receiving");
 		}
 		
@@ -36,11 +39,14 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 
 	@Override
 	protected void timerTicked() {
-		if (game != null && game instanceof HeartsLocalGame) {
+		if (game != null && game instanceof HeartsLocalGame && state != null) {
 			// attempt move
 			if (state.getTurnIdx() == playerNum) {//is it our turn?
-				sleep(750);
+				if (hasattemptedmove == false) {
+					sleep(750);
+				}
 				game.sendAction(new HeartsPlayAction(this, dumbAI()));
+				hasattemptedmove = true;
 			}
 		}
 	}
@@ -134,11 +140,43 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		if (hand.isEmpty()) {
 			return null;
 		}
-		Card c = hand.get((int) (Math.random() * (hand.size())));
-		while (!(((HeartsLocalGame) game).isValidPlay(c, playerNum, state.getCurrentTrick()[0] == null ? null : state.getCurrentTrick()[0].getSuit()))) {
-			c = hand.get((int) (Math.random() * (hand.size())));
-		}
+		Card c;
+		ArrayList<Card> whitelist = (ArrayList<Card>) hand.clone();
+		boolean validcard = false;
+		do {
+			c = whitelist.get((int) (Math.random() * (whitelist.size())));
+			validcard = isValidPlay(c, playerNum, state.getCurrentTrick()[0] == null ? null : state.getCurrentTrick()[0].getSuit());
+			whitelist.remove(c);
+		}while (!validcard);
 		return c;
+	}
+	
+	public boolean isValidPlay(Card c, int idx, Suit ledSuit) {
+		ArrayList<Card> playersHand = state.getPlayerHand(idx);
+		if (state.getFirstTurn() && !c.equals(new Card(Rank.TWO,Suit.Club))) {//first trick of hand	
+			return false;
+		}
+		if (playersHand.contains(c)
+				&& (c.getSuit().equals(ledSuit) || ledSuit == null)) {// Playing
+																		// in
+																		// suit/leading
+			if (ledSuit == null && !state.isHeartsBroken() && c.getSuit().equals(Suit.Heart)) {
+				return false;
+			}
+			
+			return true;
+		} else if (playersHand.contains(c)) {
+			boolean suitinhand = false;
+			for (Card test : playersHand) {
+				if (test.getSuit().equals(ledSuit)) {
+					suitinhand = true;
+				}
+			}
+			if (!suitinhand) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
