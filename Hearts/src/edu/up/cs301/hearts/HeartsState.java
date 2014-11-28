@@ -59,6 +59,7 @@ public class HeartsState extends GameState {
 		firstTurn = orig.getFirstTurn();
 		currentTrick = orig.getCurrentTrick();
 		heartsBroken = orig.isHeartsBroken();
+		subState = orig.getSubState();
 	}
 	
 	public int getSubState() {
