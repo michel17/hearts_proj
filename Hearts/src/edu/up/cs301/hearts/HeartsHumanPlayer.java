@@ -301,4 +301,12 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			}
 		}
 	}
+	
+	public void forceRedraw(HeartsState nstate) {
+		state = nstate;
+		hand = state.getPlayerHand(playerNum);
+		Canvas g = surface.getHolder().lockCanvas(null);
+		tick(g);
+		surface.getHolder().unlockCanvasAndPost(g);
+	}
 }
