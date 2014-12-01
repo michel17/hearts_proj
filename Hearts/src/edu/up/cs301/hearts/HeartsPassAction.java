@@ -18,4 +18,13 @@ public class HeartsPassAction extends GameAction {
 		card2 = b;
 		card3 = c;
 	}
+	public Card getCard1(){
+		return card1;
+	}
+	public Card getCard2(){
+		return card2;
+	}
+	public Card getCard3(){
+		return card3;
+	}
 }

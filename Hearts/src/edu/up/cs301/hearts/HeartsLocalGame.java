@@ -19,8 +19,10 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	HeartsState state;
 	Card[] deck;
 	int turnIdx;
+	private int passIndex;
 	private static final int INCREMENT_TURN = -1;
 	private static final int ACE_VALUE = 14;
+	private int passDirection = 1;
 
 	public HeartsLocalGame() {
 		super();
@@ -78,7 +80,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		}
 		Card[][] deal = createNewDeal();
 		state = new HeartsState(deal, new int[4], new int[4], new Card[4],
-				false);
+				false, new Card[4][3]);
 		boolean flag = false;
 		// set starting player
 		for (int j = 0; j < 4; j++) {
@@ -156,7 +158,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		if (action instanceof HeartsPlayAction) {
 			HeartsPlayAction act = (HeartsPlayAction) action;
 			p = action.getPlayer();
-			
+
 			if (act.getPlayedCard() == null) {
 				return false;
 			}
@@ -211,7 +213,78 @@ public class HeartsLocalGame extends LocalGame implements Game {
 			}
 			p.sendInfo(new NotYourTurnInfo());
 		}
+		//TODO LOOK AT THIS AND TELL ME IF IT SUCKS
+		//STEVEN ADDED THIS
+		//if we get a pass action, come through here
+		if(action instanceof HeartsPassAction){
+			//if we're in the passing state, come through here
+			if(state.getSubState() == state.PASSING){
+				
+				//Set the action and the player with the action as variables
+				HeartsPassAction act = (HeartsPassAction) action;
+				p = act.getPlayer();
 
+				//Find which player by number sent the action
+				for(int i = 0; i < players.length; i++){
+
+					//if we find the player, we know his number
+					if(players[i].equals(p)){
+						//This person is the passer, he gets an index
+						int passerIdx = i;
+						//get the array of "passCards" similar to how we store a trick
+						Card[][] passCards = state.getPassCards();
+						
+						//If we don't have a null object and we find an open slot in the array
+						//we try to add the card to the passCards variable in state
+						if(passCards != null && passCards[i][0] == null){
+							
+							//The addPassCards method takes the three cards from the action along with the passer's index
+							//And the pass direction and saves the cards to a slot in the array corresponding to the player
+							//That will receive the cards
+							state.addPassCards(act.getCard1(),act.getCard2(),act.getCard3(), passerIdx, passDirection);
+							
+							//The checkPass method checks the passCards Array in state for any openings
+							//If it finds any null spots in the array we know that we still have people
+							//Who haven't added their cards to the passCards array
+							//If there are no open spots it returns true
+							if(checkPass()){
+								//Calls the passCards method to add the cards from the currentPassCards array in state to
+								//Each player's hand by checking for openings and filling them in
+								//This will probably result in out of order cards :(
+								state.passCards();
+								//Then since we know we just passed the cards, we set the substate to PLAYING
+								state.setSubstate(state.PLAYING);
+								
+								//Then before leaving we change the direction of passing so that next hand we go in a different direction
+								if(passDirection == 1){
+									passDirection = 3;
+								}
+								else if(passDirection == -1){
+									passDirection = 2;
+								}
+								else if (passDirection == 2){
+									passDirection = 0;
+								}
+								else if(passDirection == 0){
+									passDirection = 1;
+								}
+								return true;
+							}
+							//If checkPass returns false it means we found an opening, but the person's cards were added so we return true here
+							else{
+								return true;
+							}
+
+						}
+						//If we get here it meant the first card in the passCards array for the action's player was not null
+						//We then know that the player has already added cards to the passCards array previously so we return false
+						else{
+							return false;
+						}
+					}
+				}
+			}
+		}
 		return false;
 	}
 
@@ -381,7 +454,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 				}
 			}
 			state = new HeartsState(createNewDeal(), state.getOverallScores(),
-					new int[players.length], new Card[players.length], false);
+					new int[players.length], new Card[players.length], false, state.getPassCards());
 			boolean flag = false;
 			Card[][] deal = state.getCurrentDeal();
 			// set starting player
@@ -400,5 +473,26 @@ public class HeartsLocalGame extends LocalGame implements Game {
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * checkPass
+	 * 
+	 * Cycles through the cards currently in the passCards array
+	 * and if any are null returns false.
+	 * Effectively checks if everyone has passed their cards before they can all receive their cards
+	 * 
+	 * @return true if there are no open spaces, false if there is at least one open space
+	 */
+	public boolean checkPass(){
+		
+		Card[][] passCards = state.getPassCards();
+		for(int i = 0; i < passCards.length; i++){
+			for(int k = 0; k < passCards[i].length; k++){
+				if(passCards[i][k] == null){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

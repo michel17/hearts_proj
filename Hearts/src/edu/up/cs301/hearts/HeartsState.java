@@ -9,10 +9,15 @@ public class HeartsState extends GameState {
 	///Constants
 	private static final long serialVersionUID = 2368846731817984773L;
 	public final int WAIT_WAIT = 0;
-	public final int WAIT_PASS = 1;
+	public final int PASSING = 1;
 	public final int WAIT_RECEIVE = 2;
-	public final int WAIT_PLAY = 3;
+	public final int PLAYING = 3;
 	public final int WAIT_OVER = 4;
+	
+	public final int PASS_LEFT = -1;
+	public final int PASS_RIGHT = 1;
+	public final int PASS_ACROSS = 2;
+	
 	public static final int NUM_PLAYERS = 4;
 	public static final int MAX_CARDS = 13;
 	
@@ -21,16 +26,18 @@ public class HeartsState extends GameState {
 	private int[] overallScores;
 	private int[] handScores;
 	private Card[] currentTrick;
+	private Card[][] currentPassCards;
 	private Card[][] currentHands;
 	private boolean heartsBroken;
 	private int turnIdx;
 	private boolean firstTurn;
 	
-	public HeartsState(Card[][] ncurrentHands, int[] noverallScores, int[] nhandScores, Card[] ntrick, boolean nbroken) {
+	public HeartsState(Card[][] ncurrentHands, int[] noverallScores, int[] nhandScores, Card[] ntrick, boolean nbroken, Card[][] ncurrentPassCards) {
 		overallScores = noverallScores;
 		handScores = nhandScores;
 		currentTrick = ntrick;
 		currentHands = ncurrentHands;
+		currentPassCards = ncurrentPassCards;
 		heartsBroken = nbroken;
 		firstTurn = true;
 	}
@@ -40,6 +47,7 @@ public class HeartsState extends GameState {
 		handScores = new int[NUM_PLAYERS];
 		currentTrick = new Card[NUM_PLAYERS];
 		currentHands = new Card[4][13];
+		currentPassCards = new Card[4][3];
 		heartsBroken = false;
 		for (int i = 0; i < overallScores.length; i++) {
 			overallScores[i] = orig.getOverallScore(i);
@@ -243,5 +251,58 @@ public class HeartsState extends GameState {
 	}
 	public boolean getFirstTurn() {
 		return firstTurn;
+	}
+	/**
+	 * addPassCards
+	 * 
+	 * Assigns three cards to slots in the currentPassCards array based on who passed them and what direction we're passing them
+	 * 
+	 * @param a first card
+	 * @param b second card
+	 * @param c third card
+	 * @param passer the person doing the passing
+	 * @param passDirection indicator whether we're passing to the right, left, across, or not at all
+	 */
+	public void addPassCards(Card a, Card b, Card c, int passer, int passDirection){
+		passer = ((passer + passDirection) % 4);
+		currentPassCards[passer][0] = a;
+		currentPassCards[passer][1] = b;
+		currentPassCards[passer][2] = c;
+		currentHands = removeCard(a);
+		currentHands = removeCard(b);
+		currentHands = removeCard(c);
+	}
+	/**
+	 * getPassCards
+	 * 
+	 * Gets the currentPassCards array
+	 * 
+	 * @return the currentPassCards array
+	 */
+	public Card[][] getPassCards(){
+		return currentPassCards;
+	}
+	
+	/**
+	 * passCards
+	 * 
+	 * Sets the cards currentPassCards array to the open slots in peoples' hands caused by them passing cards
+	 * the currentPassCards array already takes passing into account, so this method
+	 * simply finds open slots for the person and adds the cards to their hand
+	 */
+	public void passCards(){
+		int q = 0;
+		for(int i = 0; i < currentHands.length; i++){
+			for(int k = 0;k < currentHands[i].length; k++){
+				if(currentHands[i][k] == null && q < 3){
+					currentHands[i][k] = currentPassCards[i][q];
+					q++;
+				}
+			}
+			q = 0;
+		}
+	}
+	public void getPassDirec(){
+		
 	}
 }
