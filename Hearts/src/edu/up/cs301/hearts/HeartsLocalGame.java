@@ -257,6 +257,29 @@ public class HeartsLocalGame extends LocalGame implements Game {
 								//Each player's hand by checking for openings and filling them in
 								//This will probably result in out of order cards :(
 								state.passCards();
+								
+								////////////////////////////////////////////////
+								// ADDED THIS
+								////////////////////////////////////////////////
+								Card[][] deal = state.getCurrentDeal();
+								boolean flag = false;
+								// set starting player
+								for (int j = 0; j < 4; j++) {
+									for (int k = 0; k < 13; k++) {
+										if (deal[j][k].equals(new Card(Rank.TWO, Suit.Club))) {
+											setTurnIdx(j);
+											flag = true;
+											break;
+										}
+									}
+									if (flag) {
+										break;
+									}
+								}
+								//////////////////////////////////////////////////
+								
+								
+								
 								//Then since we know we just passed the cards, we set the substate to PLAYING
 								state.setSubstate(HeartsState.PLAYING);
 
