@@ -8,22 +8,14 @@ public class HeartsState extends GameState {
 
 	///Constants
 	private static final long serialVersionUID = 2368846731817984773L;
-<<<<<<< HEAD
-	public final int WAIT_WAIT = 0;
-	public final int PASSING = 1;
-	public final int WAIT_RECEIVE = 2;
-	public final int PLAYING = 3;
-	public final int WAIT_OVER = 4;
 	
 	public final int PASS_LEFT = -1;
 	public final int PASS_RIGHT = 1;
 	public final int PASS_ACROSS = 2;
 	
-=======
 	public static final int PASSING = 0;
 	public static final int RECEIVING = 1;
 	public static final int PLAYING = 2;
->>>>>>> origin/master
 	public static final int NUM_PLAYERS = 4;
 	public static final int MAX_CARDS = 13;
 	

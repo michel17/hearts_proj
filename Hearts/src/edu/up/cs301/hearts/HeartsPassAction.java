@@ -19,12 +19,12 @@ public class HeartsPassAction extends GameAction {
 		return passedCards;
 	}
 	public Card getCard1(){
-		return card1;
+		return passedCards[0];
 	}
 	public Card getCard2(){
-		return card2;
+		return passedCards[1];
 	}
 	public Card getCard3(){
-		return card3;
+		return passedCards[2];
 	}
 }
