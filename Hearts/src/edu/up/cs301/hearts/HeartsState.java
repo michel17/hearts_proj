@@ -302,7 +302,11 @@ public class HeartsState extends GameState {
 			q = 0;
 		}
 	}
-	public void getPassDirec(){
-		
+	public void clearPassCards(){
+		for(int i = 0; i< currentPassCards.length; i++){
+			for(int k = 0; k < currentPassCards[i].length;k++){
+				currentPassCards[i][k] = null;
+			}
+		}
 	}
 }
