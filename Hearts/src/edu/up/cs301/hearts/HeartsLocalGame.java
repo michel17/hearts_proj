@@ -379,7 +379,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		}
 		if (playersHand.contains(c)
 				&& (c.getSuit().equals(ledSuit) || ledSuit == null)) {// Playing in suit/leading
-			if (ledSuit == null && !state.isHeartsBroken() && c.getSuit().equals(Suit.Heart)) {
+			if (ledSuit == null && !state.isHeartsBroken() && !playerHasOnlyHearts(idx) && c.getSuit().equals(Suit.Heart)) {
 				return false;
 			}
 			return true;
@@ -524,7 +524,15 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		return true;
 	}
 	
-	
+	private boolean playerHasOnlyHearts(int idx) {
+		for (Card c: state.getPlayerHand(idx)) {
+			if (c.getSuit() != Suit.Heart) {
+				return false;
+			}
+		}
+		state.setHeartsBroken(true);
+		return true;
+	}
 	
 
 }
