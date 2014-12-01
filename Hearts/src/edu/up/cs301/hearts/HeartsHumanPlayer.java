@@ -274,6 +274,9 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	@Override
 	public void onTouch(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			if(hand.isEmpty()){
+				return;
+			}
 			float tx = event.getX();
 			float ty = event.getY();
 			Rect trickBoundingBox = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)),
