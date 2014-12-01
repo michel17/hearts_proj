@@ -276,9 +276,6 @@ public class HeartsLocalGame extends LocalGame implements Game {
 										break;
 									}
 								}
-								//////////////////////////////////////////////////
-								
-								
 								
 								//Then since we know we just passed the cards, we set the substate to PLAYING
 								state.setSubstate(HeartsState.PLAYING);
@@ -526,4 +523,8 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		}
 		return true;
 	}
+	
+	
+	
+
 }
