@@ -16,6 +16,8 @@ import android.graphics.Typeface;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import edu.up.cs301.animation.AnimationSurface;
 import edu.up.cs301.animation.Animator;
 import edu.up.cs301.card.Card;
@@ -50,13 +52,13 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	private static float width, height;
 	private ArrayList<Card> hand;
 	private float currentspacing;
-	private Card selectedCard;
+	private Card[] selectedCards;
 
 	public HeartsHumanPlayer(String name) {
 		super(name);
 		backgroundColor = 0xff006400;
 		paint = new Paint();
-		selectedCard = null;
+		selectedCards = new Card[3];
 
 		// Set up dummy card arraylist
 		hand = new ArrayList<Card>();
@@ -132,70 +134,141 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
 	@Override
 	public void tick(Canvas g) {
-		width = g.getWidth();
-		height = g.getHeight();
-
-		if (!hasChecked) {
-			pointUpdate();
-		}
-		paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
-		int j = 0;
-		for (int i = 0; i < scorePoint.size(); i++) {
-			if (state == null) {
-				return;
+//		width = g.getWidth();
+//		height = g.getHeight();
+//
+//		if (!hasChecked) {
+//			pointUpdate();
+//		}
+//		paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
+//		int j = 0;
+//		for (int i = 0; i < scorePoint.size(); i++) {
+//			if (state == null) {
+//				return;
+//			}
+//			if (state.getTurnIdx() == i) {
+//				paint.setUnderlineText(true);
+//			}
+//			else {
+//				paint.setUnderlineText(false);
+//			}
+//			if (i == playerNum) {
+//				paint.setColor(Color.YELLOW);
+//				paint.setTextSize(30);
+//				g.drawText(name, scorePoint.get(3).x - 70, scorePoint.get(3).y - 30, paint);
+//				paint.setColor(Color.WHITE);
+//				paint.setTextSize(20);	
+//				g.drawText("Score: " + state.getOverallScore(i) + " (" + state.getHandScore(i) + ")", scorePoint.get(3).x, scorePoint.get(3).y, paint);
+//			} else {
+//				paint.setColor(Color.WHITE);
+//				paint.setTextSize(20);	
+//				g.drawText("Score: " + state.getOverallScore(i) + " (" + state.getHandScore(i) + ")", scorePoint.get(j).x, scorePoint.get(j).y, paint);
+//				if (allPlayerNames == null) {
+//					return;
+//				}
+//				g.drawText(allPlayerNames[i], scorePoint.get(j).x,
+//						scorePoint.get(j).y - 30, paint);
+//				j++;
+//			}
+//		}
+//		paint.setUnderlineText(false);
+//		Rect r = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)),
+//				(int) (width - width / 5), (int) ((height - height / 4) - (height / 8)));
+//		paint.setStyle(Paint.Style.FILL);
+//		paint.setColor(0xff640000);
+//		g.drawRect(r, paint);
+//		paint.setColor(Color.WHITE);
+//		paint.setTextSize(20);
+//		g.drawText("Current Trick", (float) (width / 4.6), (float) (height / 5.3), paint);
+//		paint.setColor(Color.YELLOW);
+//		paint.setTextSize(15);
+//		g.drawText("01", (float) (width / 3.2), (float) (height / 5.9), paint);
+//
+//		paint.setStyle(Paint.Style.STROKE);
+//		g.drawRect(r, paint);
+//		r = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)), (int) (width / 3),
+//				(int) ((height / 3) - (height / 8)));
+//
+//		g.drawRect(r, paint);
+//		for (design = 0; design < 3; design++) {
+//			pathHelper();
+//			g.drawPath(wallPath, paint);
+//
+//		}
+//		drawTrick(g);
+//		drawCards(g);
+//		
+			width = g.getWidth();
+			height = g.getHeight();
+			if (!hasChecked) {
+				pointUpdate();
 			}
-			if (state.getTurnIdx() == i) {
-				paint.setUnderlineText(true);
-			}
-			else {
-				paint.setUnderlineText(false);
-			}
-			if (i == playerNum) {
-				paint.setColor(Color.YELLOW);
-				paint.setTextSize(30);
-				g.drawText(name, scorePoint.get(3).x - 70, scorePoint.get(3).y - 30, paint);
-				paint.setColor(Color.WHITE);
-				paint.setTextSize(20);	
-				g.drawText("Score: " + state.getOverallScore(i) + " (" + state.getHandScore(i) + ")", scorePoint.get(3).x, scorePoint.get(3).y, paint);
-			} else {
-				paint.setColor(Color.WHITE);
-				paint.setTextSize(20);	
-				g.drawText("Score: " + state.getOverallScore(i) + " (" + state.getHandScore(i) + ")", scorePoint.get(j).x, scorePoint.get(j).y, paint);
-				if (allPlayerNames == null) {
+			paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
+			int j = 0;
+			for (int i = 0; i < scorePoint.size(); i++) {
+				if (state == null) {
 					return;
 				}
-				g.drawText(allPlayerNames[i], scorePoint.get(j).x,
-						scorePoint.get(j).y - 30, paint);
-				j++;
+				if (state.getTurnIdx() == i) {
+
+					paint.setColor(Color.CYAN);
+					if (i > 0) {
+						g.drawRect(new Rect((int) (scorePoint.get(i - 1).x - 10), (int) (scorePoint
+										.get(i - 1).y - 60), (int) (scorePoint.get(i - 1).x + 110),
+										(int) (scorePoint.get(i - 1).y + 10)), paint);
+					} else if (i == 0) {
+						g.drawRect(new Rect((int) (scorePoint.get(3).x - 10),
+								(int) (scorePoint.get(3).y - 60), (int) (scorePoint.get(3).x + 110),
+								(int) (scorePoint.get(3).y + 10)), paint);
+					}
+				}
+				if (i == playerNum) {
+					paint.setColor(Color.YELLOW);
+					paint.setTextSize(30);
+					g.drawText(name, scorePoint.get(3).x, scorePoint.get(3).y - 30, paint);
+					paint.setColor(Color.WHITE);
+					paint.setTextSize(20);
+					g.drawText("Score: " + state.getOverallScore(i) + " (" + state.getHandScore(i)
+							+ ")", scorePoint.get(3).x, scorePoint.get(3).y, paint);
+				} else {
+					paint.setColor(Color.WHITE);
+					paint.setTextSize(20);
+					g.drawText("Score: " + state.getOverallScore(i) + " (" + state.getHandScore(i)
+							+ ")", scorePoint.get(j).x, scorePoint.get(j).y, paint);
+					if (allPlayerNames == null) {
+						return;
+					}
+					g.drawText(allPlayerNames[i], scorePoint.get(j).x, scorePoint.get(j).y - 30, paint);
+					j++;
+				}
 			}
-		}
-		paint.setUnderlineText(false);
-		Rect r = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)),
-				(int) (width - width / 5), (int) ((height - height / 4) - (height / 8)));
-		paint.setStyle(Paint.Style.FILL);
-		paint.setColor(0xff640000);
-		g.drawRect(r, paint);
-		paint.setColor(Color.WHITE);
-		paint.setTextSize(20);
-		g.drawText("Current Trick", (float) (width / 4.6), (float) (height / 5.3), paint);
-		paint.setColor(Color.YELLOW);
-		paint.setTextSize(15);
-		g.drawText("01", (float) (width / 3.2), (float) (height / 5.9), paint);
-
-		paint.setStyle(Paint.Style.STROKE);
-		g.drawRect(r, paint);
-		r = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)), (int) (width / 3),
-				(int) ((height / 3) - (height / 8)));
-
-		g.drawRect(r, paint);
-		for (design = 0; design < 3; design++) {
-			pathHelper();
-			g.drawPath(wallPath, paint);
-
-		}
-		drawTrick(g);
-		drawCards(g);
-		
+			Rect r = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)),
+					(int) (width - width / 5), (int) ((height - height / 4) - (height / 8)));
+			paint.setStyle(Paint.Style.FILL);
+			paint.setColor(0xff640000);
+			g.drawRect(r, paint);
+			paint.setColor(Color.WHITE);
+			paint.setTextSize(20);
+			g.drawText("Current Trick", (float) (width / 4.6), (float) (height / 5.3), paint);
+			paint.setColor(Color.YELLOW);
+			paint.setTextSize(15);
+			g.drawText("01", (float) (width / 3.2), (float) (height / 5.9), paint);
+			paint.setStyle(Paint.Style.STROKE);
+			g.drawRect(r, paint);
+			r = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)), (int) (width / 3),
+					(int) ((height / 3) - (height / 8)));
+			g.drawRect(r, paint);
+			for (design = 0; design < 3; design++) {
+				pathHelper();
+				g.drawPath(wallPath, paint);
+			}
+			if (state.getSubState() == HeartsState.PLAYING) {
+				drawTrick(g);
+			}
+			else {
+				drawButton(g);
+			}
+			drawCards(g);
 	}
 
 	@Override
@@ -205,19 +278,44 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			float ty = event.getY();
 			Rect trickBoundingBox = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)),
 					(int) (width - width / 5), (int) ((height - height / 4) - (height / 8)));
-			if (selectedCard != null && trickBoundingBox.contains((int) tx, (int) ty)) {
+			RectF buttonBoundingBox = new RectF((float) (width / 2.17), (float) ((height / 2.15) - (height / 8)),
+					(float) (width - width / 2.17), (float) ((height - height / 2.15) - (height / 8)));
+			if (state.getSubState() == HeartsState.PLAYING && selectedCards[0] != null && trickBoundingBox.contains((int) tx, (int) ty)) {
 				// playing card
-				game.sendAction(new HeartsPlayAction(this, selectedCard));
-
-			} else {
-				// Selection / deselection of cards
+				game.sendAction(new HeartsPlayAction(this, selectedCards[0]));
+				selectedCards[0] = null;
+			} 
+			else if (state.getSubState() == HeartsState.PASSING && buttonBoundingBox.contains(tx,ty) && threeCardsSelected()) {
+				// passing cards
+				game.sendAction(new HeartsPassAction(this,selectedCards));
+				selectedCards = new Card[3];
+			}
+			//Card selection for passing
+			else if (state.getSubState() == HeartsState.PASSING) {
+				int place = 0;
 				int handIdx = (int) ((hand.size()) * tx / width);
-				if (ty > height - (height / 3) && !(hand.get(handIdx) == selectedCard)) {// in
+				for (place = 0; place < 3; place++) {
+					if ((selectedCards[place] == null && selectedCards[(place+1)%3] != hand.get(handIdx) && selectedCards[(place+2)%3] != hand.get(handIdx)) || place == 2 || (hand.get(handIdx) == selectedCards[place])) {
+						break;
+					}
+				}
+				if (ty > height - (height / 3) && !(hand.get(handIdx) == selectedCards[place])) {// in
 																							// bounds
 																							// vertically
-					selectedCard = hand.get(handIdx);
+					selectedCards[place] = hand.get(handIdx);
 				} else {
-					selectedCard = null;
+					selectedCards[place] = null;
+				}
+			}
+			// Selection / deselection of cards for playing
+			else {
+				int handIdx = (int) ((hand.size()) * tx / width);
+				if (ty > height - (height / 3) && !(hand.get(handIdx) == selectedCards[0])) {// in
+																							// bounds
+																							// vertically
+					selectedCards[0] = hand.get(handIdx);
+				} else {
+					selectedCards[0] = null;
 				}
 			}
 		}
@@ -264,7 +362,13 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	private void drawCards(Canvas g) {
 		currentspacing = hand.size();
 		for (int i = 0; i < hand.size(); i++) {
-			if (selectedCard != null && hand.get(i).equals(selectedCard)) {
+			boolean isselected = false;
+			for (int j = 0; j < selectedCards.length; j++) {
+				if (selectedCards[j] != null && hand.get(i).equals(selectedCards[j])) {
+					isselected = true;
+				}
+			}
+			if (isselected) {
 				drawSelectedCard(g, hand.get(i), i);
 			} else {
 				RectF r = new RectF((width / currentspacing) * i, (height - (height / 3)),
@@ -300,5 +404,37 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 				trick[i].drawOn(g, r);
 			}
 		}
+	}
+	
+	public void forceRedraw(HeartsState nstate) {
+		state = nstate;
+		hand = state.getPlayerHand(playerNum);
+		Canvas g = surface.getHolder().lockCanvas(null);
+		tick(g);
+		surface.getHolder().unlockCanvasAndPost(g);
+	}
+	
+	private void drawButton(Canvas g) {
+		RectF buttonArea = new RectF((float) (width / 2.17), (float) ((height / 2.15) - (height / 8)),
+				(float) (width - width / 2.17), (float) ((height - height / 2.15) - (height / 8)));
+		paint.setColor(Color.BLACK);
+		paint.setStyle(Paint.Style.FILL);
+		g.drawRect(buttonArea, paint);
+		paint.setColor(Color.YELLOW);
+		if (state.getSubState() == HeartsState.PASSING) {
+			g.drawText("Pass Cards", (float) (width/2.165), (float) (height/2) - (height / 8), paint);
+		} else {// receiving
+			g.drawText("Receive Cards", (float) (width/2.165), (float) (height/2) - (height / 8), paint);
+		}
+		paint.setStyle(Paint.Style.STROKE);
+	}
+	
+	private boolean threeCardsSelected() {
+		for (int i = 0; i < selectedCards.length; i++) {
+			if (selectedCards[i] == null) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

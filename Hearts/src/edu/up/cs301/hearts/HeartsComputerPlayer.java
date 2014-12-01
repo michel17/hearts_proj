@@ -45,7 +45,12 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 				if (hasattemptedmove == false) {
 					sleep(750);
 				}
-				game.sendAction(new HeartsPlayAction(this, dumbAI()));
+				if (state.getSubState() == HeartsState.PLAYING) {
+					game.sendAction(new HeartsPlayAction(this, dumbAI()));
+				}
+				else if (state.getSubState() == HeartsState.PASSING) {
+					game.sendAction(new HeartsPassAction(this, dumbPass()));
+				}
 				hasattemptedmove = true;
 			}
 		}
@@ -149,6 +154,16 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 			whitelist.remove(c);
 		}while (!validcard);
 		return c;
+	}
+	
+	private Card[] dumbPass() {
+		Card[] retArry = new Card[3];
+		ArrayList<Card> whitelist = (ArrayList<Card>) hand.clone();
+		for (int i = 0; i < retArry.length; i++) {
+			retArry[i] = whitelist.get((int) (Math.random() * (whitelist.size())));
+			whitelist.remove(retArry[i]);
+		}
+		return retArry;
 	}
 	
 	public boolean isValidPlay(Card c, int idx, Suit ledSuit) {

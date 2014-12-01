@@ -189,6 +189,10 @@ public class HeartsLocalGame extends LocalGame implements Game {
 											// player can see the fourth card
 											for (GamePlayer play : players) {
 												play.sendInfo(state);
+												Log.i("Thread Name", Thread.currentThread().getName());
+												if (Thread.currentThread().getName().equals("main") && play instanceof HeartsHumanPlayer) {
+													((HeartsHumanPlayer) play).forceRedraw(state);
+												}
 											}
 											try {
 												Thread.sleep(1000);
