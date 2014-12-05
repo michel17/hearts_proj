@@ -10,10 +10,12 @@ public class HeartsState extends GameState {
 	// /Constants
 	private static final long serialVersionUID = 2368846731817984773L;
 
+	//Constants to deal with passing cards
 	public final int PASS_LEFT = -1;
 	public final int PASS_RIGHT = 1;
 	public final int PASS_ACROSS = 2;
 
+	//Phase constants
 	public static final int PASSING = 0;
 	public static final int RECEIVING = 1;
 	public static final int PLAYING = 2;
@@ -31,6 +33,18 @@ public class HeartsState extends GameState {
 	private int turnIdx;
 	private boolean firstTurn;
 
+	/**
+	 * HeartsState:
+	 * 
+	 * Constructor for the HeartsState object
+	 * 
+	 * @param ncurrentHands Card Array to represent the current hands of all the players
+	 * @param noverallScores Array of integers to represent the overall scores of each player
+	 * @param nhandScores Array of integers to represent the hand scores of each player
+	 * @param ntrick Array of cards to represent the current trick in play
+	 * @param nbroken Boolean to tell if hearts have been broken yet
+	 * @param ncurrentPassCards Array of cards that are being passed in the passing phase
+	 */
 	public HeartsState(Card[][] ncurrentHands, int[] noverallScores,
 			int[] nhandScores, Card[] ntrick, boolean nbroken,
 			Card[][] ncurrentPassCards) {
@@ -44,6 +58,14 @@ public class HeartsState extends GameState {
 		subState = PASSING;
 	}
 
+	/**
+	 * HeartsState:
+	 * 
+	 * Copy constructor for the HeartsState object
+	 * 
+	 * @param orig HeartsState object to be copied
+	 * @param forPlayer integer identifier of the player we're sending the copy to
+	 */
 	public HeartsState(HeartsState orig, int forPlayer) {
 		overallScores = new int[NUM_PLAYERS];
 		handScores = new int[NUM_PLAYERS];
@@ -72,10 +94,25 @@ public class HeartsState extends GameState {
 		subState = orig.getSubState();
 	}
 
+	/**
+	 * getSubstate:
+	 * 
+	 * Getter method for the substate integer
+	 * 
+	 * @return the current substate
+	 */
 	public int getSubState() {
 		return subState;
 	}
 
+	/**
+	 * getOverallScore:
+	 * 
+	 * Gets the overall score for a given player
+	 * 
+	 * @param idx The index of the player whose score we're finding
+	 * @return The overall score for that player
+	 */
 	public int getOverallScore(int idx) {
 		if (idx < NUM_PLAYERS) {
 			return overallScores[idx];
@@ -84,10 +121,24 @@ public class HeartsState extends GameState {
 		}
 	}
 
+	/**
+	 * getHandScore:
+	 * 
+	 * Gets the hand score for a given player
+	 * @param idx the index of the player whose hand score we're finding
+	 * @return The hand score for the given player
+	 */
 	public int getHandScore(int idx) {
 		return handScores[idx];
 	}
 
+	/**
+	 * getCurrentTrick:
+	 * 
+	 * Gets the current trick
+	 * 
+	 * @return A card array containing the cards in the current trick in order
+	 */
 	public Card[] getCurrentTrick() {
 		Card[] copy = new Card[NUM_PLAYERS];
 		for (int i = 0; i < copy.length; i++) {
@@ -96,28 +147,68 @@ public class HeartsState extends GameState {
 		return copy;
 	}
 
+	/**
+	 * setHeartsBroken:
+	 * 
+	 * Sets hearts to be broken or not
+	 * 
+	 * @param b Boolean of what heartsBroken will be set to
+	 */
 	public void setHeartsBroken(boolean b) {
 		heartsBroken = b;
 	}
 
+	/**
+	 * isHeartsBroken:
+	 * 
+	 * Tells whether or not hearts have been broken yet
+	 * 
+	 * @return True if hearts have been broken, false if they have not
+	 */
 	public boolean isHeartsBroken() {
 		return heartsBroken;
 	}
 
+	/**
+	 * getNumPlayers:
+	 * 
+	 * Gets the number of players in the game
+	 * @return The number of players in the game
+	 */
 	public int getNumPlayers() {
 		return NUM_PLAYERS;
 	}
 
+	/**
+	 * setSubstate:
+	 * 
+	 * Sets the substate to the given integer
+	 * @param i The number we're setting the substate to
+	 */
 	public void setSubstate(int i) {
-		// TODO FIX THIS ISH
 		subState = i;
 		return;
 	}
 
+	/**
+	 * getCurrentDeal:
+	 * 
+	 * Gets the current deal of cards in the game
+	 * 
+	 * @return The currentHands instance variable
+	 */
 	public Card[][] getCurrentDeal() {
 		return currentHands;
 	}
 
+	/**
+	 * getPlayerHand
+	 * 
+	 * Gets a card array of a given player
+	 * 
+	 * @param idx the index for the player whose hand we're trying to find
+	 * @return An arrayList of cards in the player's hand
+	 */
 	public ArrayList<Card> getPlayerHand(int idx) {
 		ArrayList<Card> hand = new ArrayList<Card>();
 		for (int i = 0; i < currentHands[idx].length; i++) {
@@ -319,7 +410,11 @@ public class HeartsState extends GameState {
 		}
 		sortHands();
 	}
-
+	/**
+	 * clearPassCards
+	 * 
+	 * Clears the passCards array for reuse
+	 */
 	public void clearPassCards() {
 		for (int i = 0; i < currentPassCards.length; i++) {
 			for (int k = 0; k < currentPassCards[i].length; k++) {
@@ -328,10 +423,12 @@ public class HeartsState extends GameState {
 		}
 	}
 
+	/**
+	 * sortHands
+	 * 
+	 * Sorts the hands of a player, used to make sure hands are organized after passing occurs
+	 */
 	private void sortHands() {
-		// ////////////////////////////////////////////////
-		// ADDED THIS TOO
-		// ////////////////////////////////////////////////
 		// sort hands using selection sort
 		for (int j = 0; j < 4; j++) {
 			int first = 0;
@@ -354,7 +451,15 @@ public class HeartsState extends GameState {
 			}
 		}
 	}
-
+	
+	/**
+	 * suitCompare
+	 * 
+	 * Compares two suits for the purpose for sorting a player's hand
+	 * @param first the first suit we're looking at
+	 * @param second the second suit we're looking at
+	 * @return 1 if the first goes further left in the hand than the second, -1 if the second goes further left in the hand
+	 */
 	private int suitCompare(Suit first, Suit second) {
 		if (first == second) {
 			return 0;
