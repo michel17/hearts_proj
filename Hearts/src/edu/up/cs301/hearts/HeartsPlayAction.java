@@ -1,9 +1,18 @@
+
+
 package edu.up.cs301.hearts;
 
 import edu.up.cs301.card.Card;
 import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.actionMsg.GameAction;
-
+/**
+ * HeartsPlayAction - 
+ * 
+ * Action used when playing a card, represents a card being played into a trick
+ * 
+ * @author Steven Lind, Kyle Michel, David Rodden
+ * @version 12/5/2014
+ */
 public class HeartsPlayAction extends GameAction {
 	
 	//The card being played

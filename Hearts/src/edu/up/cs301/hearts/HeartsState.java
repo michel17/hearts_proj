@@ -5,6 +5,15 @@ import edu.up.cs301.card.Card;
 import edu.up.cs301.card.Suit;
 import edu.up.cs301.game.infoMsg.GameState;
 
+/**
+ * HeartsState -
+ * 
+ * Class to contain all the information regarding the state of the game.
+ * All players have copies of the state, heartsLocalGame contains the original
+ * 
+ * @author Steven Lind, Kyle Michel, David Rodden
+ * @version 12/5/2014
+ */
 public class HeartsState extends GameState {
 
 	// /Constants

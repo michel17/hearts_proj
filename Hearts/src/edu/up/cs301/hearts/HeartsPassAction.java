@@ -4,6 +4,15 @@ import edu.up.cs301.card.Card;
 import edu.up.cs301.game.GamePlayer;
 import edu.up.cs301.game.actionMsg.GameAction;
 
+/**
+ * HeartsPassAction -
+ * 
+ * Object to represent the act of picking three cards from your
+ * hand and passing them to another player
+ * 
+ * @author Steven Lind, Kyle Michel, David Rodden
+ * @version 12/5/2014
+ */
 public class HeartsPassAction extends GameAction {
 	//Card Array to hold the passedCards
 	Card[] passedCards;
