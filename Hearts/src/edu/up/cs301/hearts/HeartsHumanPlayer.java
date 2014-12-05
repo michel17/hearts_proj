@@ -345,6 +345,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			if (isselected) {
 				drawSelectedCard(g, hand.get(i), i);
 			} else {
+				//bounding box for an unselected card
 				RectF r = new RectF((width / currentspacing) * i, (height - (height / 3)),
 						(width / currentspacing) * i + 150, height);
 				hand.get(i).drawOn(g, r);
@@ -365,6 +366,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			return;
 		}
 		paint.setColor(Color.YELLOW);
+		//bounding box for a selected card
 		RectF highlight = new RectF((width / currentspacing) * loc - 1,
 				(height - (height / 3)) - 21, (width / currentspacing) * loc + 151, height - 19);
 		g.drawRect(highlight, paint);
@@ -387,6 +389,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		Card[] trick = state.getCurrentTrick();
 		for (int i = 0; i < trick.length; i++) {
 			if (trick[i] != null) {
+				//bounding box each card in the trick
 				RectF r = new RectF((width / 5) + i * (width - (2 * width / 5)) / 4 + 20,
 						height / 4, (width / 5) + i * (width - (2 * width / 5)) / 4 + 170, height
 								- (3 * height / 8) - 20);
@@ -395,6 +398,12 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		}
 	}
 	
+	/**
+	 * Forces the animation surface to update with a new game state
+	 * 
+	 * @param nstate
+	 * 		The new game state
+	 */
 	public void forceRedraw(HeartsState nstate) {
 		state = nstate;
 		hand = state.getPlayerHand(playerNum);
@@ -403,6 +412,15 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		surface.getHolder().unlockCanvasAndPost(g);
 	}
 	
+	/**
+	 * drawButton
+	 * 
+	 * Draws a button-like rectangle that for all intents and purposes acts as a button,
+	 * just drawn onto the animation surface.
+	 * 
+	 * @param g
+	 * 		The canvas we're drawing on
+	 */
 	private void drawButton(Canvas g) {
 		RectF buttonArea = new RectF((float) (width / 2.17), (float) ((height / 2.15) - (height / 8)),
 				(float) (width - width / 2.17), (float) ((height - height / 2.15) - (height / 8)));
@@ -418,6 +436,14 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		paint.setStyle(Paint.Style.STROKE);
 	}
 	
+	/**
+	 * threeCardsSelected
+	 * 
+	 * Tests to see if three cards are selected and we can therefore pass them
+	 * 
+	 * @return
+	 * 		whether or not three cards are selected
+	 */
 	private boolean threeCardsSelected() {
 		for (int i = 0; i < selectedCards.length; i++) {
 			if (selectedCards[i] == null) {
