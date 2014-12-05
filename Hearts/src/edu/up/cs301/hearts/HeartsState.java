@@ -87,6 +87,9 @@ public class HeartsState extends GameState {
 			handScores[i] = orig.getHandScore(i);
 		}
 		Card[][] cDeal = orig.getCurrentDeal();
+		//Increments through a deck of cards and assigns each card to the correct player
+		//This not only makes sure all player receive the correct cards, but also that each
+		//card is in the correct order when placed into the player's hand
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 13; j++) {
 				if (i == forPlayer) {
@@ -378,7 +381,10 @@ public class HeartsState extends GameState {
 	 */
 	public void addPassCards(Card a, Card b, Card c, int passer,
 			int passDirection) {
+		//By adding pass direction to passer's number and modding by four, we get the number
+		//of the person who will be receiving the cards
 		passer = ((passer + passDirection) % 4);
+		//This block removes the passed cards from the player's hand
 		currentPassCards[passer][0] = a;
 		currentPassCards[passer][1] = b;
 		currentPassCards[passer][2] = c;
@@ -408,6 +414,8 @@ public class HeartsState extends GameState {
 	 */
 	public void passCards() {
 		int q = 0;
+		//Finds open slots in a given players hand(formed from passing cards) and inserts the cards
+		//passed to them into those slots
 		for (int i = 0; i < currentHands.length; i++) {
 			for (int k = 0; k < currentHands[i].length; k++) {
 				if (currentHands[i][k] == null && q < 3) {
