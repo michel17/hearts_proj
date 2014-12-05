@@ -48,7 +48,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	private boolean hasChecked;
 	private int design = 0;
 	private Path wallPath;
-	private ArrayList<PointF> scorePoint = new ArrayList<>(3);
+	private ArrayList<PointF> scorePoint = new ArrayList<PointF>(3);
 	private static float width, height;
 	private ArrayList<Card> hand;
 	private float currentspacing;

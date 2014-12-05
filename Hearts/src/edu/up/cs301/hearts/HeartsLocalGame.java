@@ -14,16 +14,40 @@ import edu.up.cs301.game.LocalGame;
 import edu.up.cs301.game.actionMsg.GameAction;
 import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
 
+/**
+ * HeartsLocalGame -
+ * 
+ * The main rule-handling class for the game. Serves as a sort of "game table"
+ * that mediates interactions between players such that the players will never 
+ * directly interact with each other. The players will send GameAction objects
+ * that represent a particular interaction within the game, and the localgame
+ * will send an appropriate GameInfo based on the legality of the given move
+ * and any changes it may make to the state of the game.
+ * 
+ * @author Steven Lind, Kyle Michel, David Rodden
+ * @version 12/5/2014
+ */
 public class HeartsLocalGame extends LocalGame implements Game {
 
+	//The master copy of the game state
 	HeartsState state;
+	
+	//The set of all cards in the game
 	Card[] deck;
+	//The player index of the current player
 	int turnIdx;
-	private int passIndex;
+	
+	//constants
 	private static final int INCREMENT_TURN = -1;
 	private static final int ACE_VALUE = 14;
 	private int passDirection = 1;
 
+	/**
+	 * HeartsLocalGame
+	 * 
+	 * Initializes the local game, initializes the "Deck" that we will be pulling all 
+	 * the card objects from.
+	 */
 	public HeartsLocalGame() {
 		super();
 		int count = 0;
@@ -99,7 +123,10 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	}
 
 	/**
+	 * sendUpdatedStateTo
 	 * {@inheritDoc}
+	 * 
+	 * sends a copy of the current master game state to the indicated player
 	 */
 	@Override
 	protected void sendUpdatedStateTo(GamePlayer p) {
@@ -116,7 +143,10 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	}
 
 	/**
+	 * canMove
 	 * {@inheritDoc}
+	 * 
+	 * checks if this player is allowed to play right now
 	 */
 	@Override
 	protected boolean canMove(int playerIdx) {
@@ -128,7 +158,11 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	}
 
 	/**
+	 * checkIfGameOver
 	 * {@inheritDoc}
+	 * 
+	 * If a player has over 100 points, the game ends.  The player with the least points 
+	 * at this point in time wins the game.
 	 */
 	@Override
 	protected String checkIfGameOver() {
@@ -149,7 +183,11 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	}
 
 	/**
+	 * makeMove
 	 * {@inheritDoc}
+	 * 
+	 * The main function that handles processing of game rules. Calls the appropriate helper
+	 * functions to process the proposed moves from the players.
 	 */
 	@Override
 	protected boolean makeMove(GameAction action) {
@@ -189,6 +227,8 @@ public class HeartsLocalGame extends LocalGame implements Game {
 											// player can see the fourth card
 											for (GamePlayer play : players) {
 												play.sendInfo(state);
+												//Force the gui to update, in case the thread that would have updated it is
+												//busy here.
 												Log.i("Thread Name", Thread.currentThread().getName());
 												if (Thread.currentThread().getName().equals("main") && play instanceof HeartsHumanPlayer) {
 													((HeartsHumanPlayer) play).forceRedraw(state);
@@ -217,8 +257,6 @@ public class HeartsLocalGame extends LocalGame implements Game {
 			}
 			p.sendInfo(new NotYourTurnInfo());
 		}
-		//TODO LOOK AT THIS AND TELL ME IF IT SUCKS
-		//STEVEN ADDED THIS
 		//if we get a pass action, come through here
 		if(action instanceof HeartsPassAction){
 			//if we're in the passing state, come through here
@@ -258,9 +296,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 								//This will probably result in out of order cards :(
 								state.passCards();
 								
-								////////////////////////////////////////////////
-								// ADDED THIS
-								////////////////////////////////////////////////
+								//resets the player who must lead the first trick
 								Card[][] deal = state.getCurrentDeal();
 								boolean flag = false;
 								// set starting player
@@ -305,9 +341,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 						//If we get here it meant the first card in the passCards array for the action's player was not null
 						//We then know that the player has already added cards to the passCards array previously so we return false
 						else{
-							
 							return false;
-							
 						}
 					}
 				}
@@ -319,8 +353,12 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	/**
 	 * createNewDeal
 	 * 
-	 * creates a new deal of cards Requires import statements for great
-	 * depression and FDR to run
+	 * Deals out the whole deck to random players. Rather than assigning a random card to a particular
+	 * player, assign a random player to a particular card. This automatically sorts the hands on deal.
+	 * To avoid repeatedly trying to give cards to a player who can't hold that card in their hand, for
+	 * each iteration, randomize the order to try players in. One of these players will be able to take
+	 * the card.
+	 * Requires import statements for great depression and FDR to run for a fourth term.
 	 * 
 	 * @return the new deal of cards for the next hand
 	 */
@@ -349,6 +387,15 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		return deal;
 	}
 
+	/**
+	 * setTurnIdx
+	 * 
+	 * Changes the value of the turnIdx in HeartsLocalGame and HeartsState (the same value).
+	 * If i is INCREMENT, set the turnIdx to the next person in the rotation of play.
+	 * 
+	 * @param i
+	 * 		the new turn index
+	 */
 	public void setTurnIdx(int i) {
 		if (i == -1) {
 			turnIdx++;
@@ -362,7 +409,9 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	/**
 	 * isValidPlay
 	 * 
-	 * checks if the chosen card is a valid play
+	 * Checks if the card indicated is a valid card to play for the given player at this point in time. Takes into account
+	 * playing the 2 of clubs, whether or not hearts have been broken, whether or not the player actually possesses the
+	 * card, and whether or not they have to play in suit in the trick.
 	 * 
 	 * @param c
 	 *            the card chosen by the player to be played
@@ -400,7 +449,8 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	/**
 	 * checkTrick
 	 * 
-	 * checks to see if the trick is over and awards points if it is
+	 * Checks to see if the trick is over and awards points to the appropriate players if it is.
+	 * Determines who leads the next trick by setting the turnIdx.
 	 * 
 	 * @return true if the trick is over, false if it isn't
 	 */
@@ -437,7 +487,6 @@ public class HeartsLocalGame extends LocalGame implements Game {
 				winnerIndex = ((winnerIndex + 1) % 4);
 			}
 			// WE HAVE WINNER
-			// TODO ADD GIVING POINTS TO THE WINNER HERE
 			state.setHandScore(realWinner, state.getHandScore(realWinner) + points);
 			setTurnIdx(realWinner);
 			return true;
@@ -445,16 +494,11 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		return false;
 	}
 
-	// THINK ON YOUR SINS
-	// private int reverseTurnIndex(){
-	// turnIdx = ((turnIdx + 3) % 4);
-	// return turnIdx;
-	// }
-
 	/**
 	 * isHandOver
 	 * 
-	 * checks if the hand is over
+	 * Checks if the hand is over, if it is, compile all the points for that hand and add them to the overall
+	 * score and deal the next hand.
 	 * 
 	 * @return true if the hand is over, false if it isn't
 	 */
@@ -465,6 +509,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 			// Hand is over, compile scores together
 			boolean moonshot = false;
 			int i;
+			//Check to see if anybody shot the moon
 			for (i = 0; i < players.length; i++) {
 				int score = state.getHandScore(i);
 				if (score == 26) {
@@ -477,10 +522,12 @@ public class HeartsLocalGame extends LocalGame implements Game {
 			if (moonshot == true) {
 				for (int j = 0; j < players.length; j++) {
 					if (i != j) {
+						//give everybody else 26 points
 						state.setOverallScore(j, state.getOverallScore(j) + 26);
 					}
 				}
 			}
+			//entirely reset the state except for the overall scores
 			state = new HeartsState(createNewDeal(), state.getOverallScores(),
 					new int[players.length], new Card[players.length], false, state.getPassCards());
 			boolean flag = false;
@@ -524,6 +571,17 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		return true;
 	}
 	
+	/**
+	 * playerHasOnlyHearts
+	 * 
+	 * Checks a player's hand and determines if they have only hearts in their hand.
+	 * Used to handle a special case of hearts breaking.
+	 * 
+	 * @param idx
+	 * 		the index of the player in question
+	 * @return
+	 * 		whether or not a player only possesses hearts in their hand
+	 */
 	private boolean playerHasOnlyHearts(int idx) {
 		for (Card c: state.getPlayerHand(idx)) {
 			if (c.getSuit() != Suit.Heart) {
@@ -533,6 +591,4 @@ public class HeartsLocalGame extends LocalGame implements Game {
 		state.setHeartsBroken(true);
 		return true;
 	}
-	
-
 }

@@ -10,15 +10,44 @@ import edu.up.cs301.card.Suit;
 import edu.up.cs301.game.GameComputerPlayer;
 import edu.up.cs301.game.infoMsg.GameInfo;
 
+/**
+ * HeartsComputerPlayer -
+ * 
+ * A computerized game player in the game of hearts that operates entirely
+ * without any gui, choosing its moves algorithmically. The algorithm used
+ * is based on the aitype variable, but otherwise the computer player should
+ * behave the same regardless of difficulty setting.
+ * 
+ * @author Steven Lind, Kyle Michel, David Rodden
+ * @version 12/5/2014
+ */
 public class HeartsComputerPlayer extends GameComputerPlayer {
+	
+	//A copy of the current game state
 	HeartsState state;
-	ArrayList<Card> hand = new ArrayList<>();
+	
+	//The player's current hand
+	ArrayList<Card> hand = new ArrayList<Card>();
+	//The amount of time the ai will wait before playing a card
 	int sleepsecs = 750;
 	boolean hasattemptedmove = false;
+	//The algorithm used in determining moves, based on the "difficulty" of the AI
+	private int aitype;
+	
+	//constants
 	public static final int DUMB_AI = 0;
 	public static final int SMART_AI = 1;
-	private int aitype = 0;
 	
+	/**
+	 * HeartsComputerPlayer
+	 * 
+	 * Initializes the HeartsComputerPlayer object, sets the player type/difficulty
+	 * 
+	 * @param name
+	 * 		The player's name
+	 * @param type
+	 * 		The difficulty
+	 */
 	public HeartsComputerPlayer(String name, int type) {
 		super(name);
 		aitype = type;
@@ -65,10 +94,28 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		}
 	}
 
+	/**
+	 * getPlayerNumber
+	 * 
+	 * Getter method for playerNum
+	 * 
+	 * @return
+	 * 		The player's player index
+	 */
 	public int getPlayerNumber() {
 		return playerNum;
 	}
 
+	/**
+	 * smartAI
+	 * 
+	 * The logic for a player choosing the lowest card possible in the 
+	 * current situation in order to avoid taking tricks and therefore 
+	 * points at all.
+	 * 
+	 * @return
+	 * 		The card the algorithm has determined best to play
+	 */
 	private Card smartAI() {
 
 		Card[] trick = state.getCurrentTrick();
@@ -146,8 +193,15 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		return leastElement;
 	}
 
-	// We're going stone age basic. Try a random card and play it. Ignore
-	// everything else.
+	/**
+	 * dumbAI
+	 * 
+	 * Chooses a random card to play from the player's hand, within the 
+	 * confines of what the game rules allow.
+	 * 
+	 * @return
+	 * 		A random card
+	 */
 	private Card dumbAI() {
 		if (hand.isEmpty()) {
 			return null;
@@ -163,6 +217,14 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		return c;
 	}
 	
+	/**
+	 * dumbPass
+	 * 
+	 * Randomly chooses three cards from the player's hand to pass to another player.
+	 * 
+	 * @return
+	 * 		Three random cards
+	 */
 	private Card[] dumbPass() {
 		Card[] retArry = new Card[3];
 		ArrayList<Card> whitelist = (ArrayList<Card>) hand.clone();
@@ -173,6 +235,21 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		return retArry;
 	}
 	
+	/**
+	 * isValidPlay
+	 * 
+	 * Locally checks to see if the given card is allowed to be played within the
+	 * constraints of the game rules, before sending the move to the game.
+	 * 
+	 * @param c
+	 * 		A card that may be played
+	 * @param idx
+	 * 		The player's index in the order of rotation
+	 * @param ledSuit
+	 * 		The lead suit of the current trick
+	 * @return
+	 * 		Whether or not this card is allowed to be played
+	 */
 	public boolean isValidPlay(Card c, int idx, Suit ledSuit) {
 		ArrayList<Card> playersHand = state.getPlayerHand(idx);
 		if (state.getFirstTurn() && !c.equals(new Card(Rank.TWO,Suit.Club))) {//first trick of hand	
@@ -201,6 +278,16 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		return false;
 	}
 	
+	/**
+	 * playerHasOnlyHearts
+	 * 
+	 * Helper for isValidPlay, handles special case for breaking hearts
+	 * 
+	 * @param idx
+	 * 		The player's index
+	 * @return
+	 * 		Whether or not the player's hand contains only hearts.
+	 */	
 	private boolean playerHasOnlyHearts(int idx) {
 		for (Card c: state.getPlayerHand(idx)) {
 			if (c.getSuit() != Suit.Heart) {
