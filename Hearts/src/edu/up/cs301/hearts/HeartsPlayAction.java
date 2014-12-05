@@ -6,15 +6,29 @@ import edu.up.cs301.game.actionMsg.GameAction;
 
 public class HeartsPlayAction extends GameAction {
 	
+	//The card being played
 	Card PlayedCard;
 
 	private static final long serialVersionUID = 8272259018444961179L;
 	
+	/**
+	 * HeartsPlayAction:
+	 * 
+	 * Constructor for the HeartsPlayAction Object
+	 * @param player The player making the play
+	 * @param c The card being played
+	 */
 	public HeartsPlayAction(GamePlayer player, Card c) {
 		super(player);
 		PlayedCard = c;
 	}
 	
+	/**
+	 * getPlayedCard:
+	 * 
+	 * Gets the card being played
+	 * @return The card being played
+	 */
 	public Card getPlayedCard() {
 		return PlayedCard;
 	}
