@@ -320,7 +320,7 @@ public class HeartsLocalGame extends LocalGame implements Game {
 								if(passDirection == 1){
 									passDirection = 3;
 								}
-								else if(passDirection == -1){
+								else if(passDirection == 3){
 									passDirection = 2;
 								}
 								else if (passDirection == 2){
@@ -390,11 +390,17 @@ public class HeartsLocalGame extends LocalGame implements Game {
 	/**
 	 * setTurnIdx
 	 * 
+<<<<<<< HEAD
 	 * Changes the value of the turnIdx in HeartsLocalGame and HeartsState (the same value).
 	 * If i is INCREMENT, set the turnIdx to the next person in the rotation of play.
 	 * 
 	 * @param i
 	 * 		the new turn index
+=======
+	 * Sets the turn index to the given value
+	 * 
+	 * @param i The number we want to set the turn index to, if i is -1 we increment the turn instead of setting it
+>>>>>>> 9530f1907e1e4f4fb456bd697fc4346066e72f4b
 	 */
 	public void setTurnIdx(int i) {
 		if (i == -1) {
