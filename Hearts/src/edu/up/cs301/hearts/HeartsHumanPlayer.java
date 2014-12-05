@@ -54,6 +54,12 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	private float currentspacing;
 	private Card[] selectedCards;
 
+	/**
+	 * HeartsHumanPlayer:
+	 * 
+	 * Constructor for the HeartsHumanPlayer object
+	 * @param name the name of the player to be created
+	 */
 	public HeartsHumanPlayer(String name) {
 		super(name);
 		backgroundColor = 0xff006400;
@@ -64,7 +70,12 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		hand = new ArrayList<Card>();
 	}
 
-	@Override
+	/**
+	 * setAsGui:
+	 * 
+	 * Sets the given activity as the GUI for the human player
+	 * @param GameMainActivity
+	 */
 	public void setAsGui(GameMainActivity activity) {
 		myActivity = activity;
 		// Load the layout resource for the new configuration
@@ -133,71 +144,7 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 	}
 
 	@Override
-	public void tick(Canvas g) {
-//		width = g.getWidth();
-//		height = g.getHeight();
-//
-//		if (!hasChecked) {
-//			pointUpdate();
-//		}
-//		paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
-//		int j = 0;
-//		for (int i = 0; i < scorePoint.size(); i++) {
-//			if (state == null) {
-//				return;
-//			}
-//			if (state.getTurnIdx() == i) {
-//				paint.setUnderlineText(true);
-//			}
-//			else {
-//				paint.setUnderlineText(false);
-//			}
-//			if (i == playerNum) {
-//				paint.setColor(Color.YELLOW);
-//				paint.setTextSize(30);
-//				g.drawText(name, scorePoint.get(3).x - 70, scorePoint.get(3).y - 30, paint);
-//				paint.setColor(Color.WHITE);
-//				paint.setTextSize(20);	
-//				g.drawText("Score: " + state.getOverallScore(i) + " (" + state.getHandScore(i) + ")", scorePoint.get(3).x, scorePoint.get(3).y, paint);
-//			} else {
-//				paint.setColor(Color.WHITE);
-//				paint.setTextSize(20);	
-//				g.drawText("Score: " + state.getOverallScore(i) + " (" + state.getHandScore(i) + ")", scorePoint.get(j).x, scorePoint.get(j).y, paint);
-//				if (allPlayerNames == null) {
-//					return;
-//				}
-//				g.drawText(allPlayerNames[i], scorePoint.get(j).x,
-//						scorePoint.get(j).y - 30, paint);
-//				j++;
-//			}
-//		}
-//		paint.setUnderlineText(false);
-//		Rect r = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)),
-//				(int) (width - width / 5), (int) ((height - height / 4) - (height / 8)));
-//		paint.setStyle(Paint.Style.FILL);
-//		paint.setColor(0xff640000);
-//		g.drawRect(r, paint);
-//		paint.setColor(Color.WHITE);
-//		paint.setTextSize(20);
-//		g.drawText("Current Trick", (float) (width / 4.6), (float) (height / 5.3), paint);
-//		paint.setColor(Color.YELLOW);
-//		paint.setTextSize(15);
-//		g.drawText("01", (float) (width / 3.2), (float) (height / 5.9), paint);
-//
-//		paint.setStyle(Paint.Style.STROKE);
-//		g.drawRect(r, paint);
-//		r = new Rect((int) width / 5, (int) ((height / 4) - (height / 8)), (int) (width / 3),
-//				(int) ((height / 3) - (height / 8)));
-//
-//		g.drawRect(r, paint);
-//		for (design = 0; design < 3; design++) {
-//			pathHelper();
-//			g.drawPath(wallPath, paint);
-//
-//		}
-//		drawTrick(g);
-//		drawCards(g);
-//		
+	public void tick(Canvas g) {	
 			width = g.getWidth();
 			height = g.getHeight();
 			if (!hasChecked) {
@@ -323,7 +270,11 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 			}
 		}
 	}
-
+	/**
+	 * pointUpdate:
+	 * 
+	 * Updates points, utilized in drawing the GUI
+	 */
 	public void pointUpdate() {
 		PointF p;
 		p = new PointF(width / 10, height / 10);
@@ -336,7 +287,11 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		scorePoint.add(p);
 		hasChecked = true;
 	}
-
+	/**
+	 * PathHelper:
+	 * 
+	 * Helper method used in drawing the GUI
+	 */
 	public void pathHelper() {
 		int triangleDepth = 20;
 		wallPath = new Path();
@@ -362,6 +317,12 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		}
 	}
 
+	/**
+	 * drawCards:
+	 * 
+	 * Draws the cards currently in the player's hand
+	 * @param g The canvas we're drawing on
+	 */
 	private void drawCards(Canvas g) {
 		currentspacing = hand.size();
 		for (int i = 0; i < hand.size(); i++) {
@@ -382,6 +343,14 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		}
 	}
 
+	/**
+	 * drawSelectedCard:
+	 * 
+	 * Called when a card is selected, draws the selected card
+	 * @param g The canvas we're drawing on
+	 * @param c The selected card
+	 * @param loc Location of the tap
+	 */
 	private void drawSelectedCard(Canvas g, Card c, int loc) {
 		if (c == null) {
 			return;
@@ -396,6 +365,13 @@ public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 		c.drawOn(g, r);
 	}
 
+	/**
+	 * drawTrick:
+	 * 
+	 * Draws the cards in the current trick
+	 * 
+	 * @param g The canvas we're drawing on
+	 */
 	private void drawTrick(Canvas g) {
 		if (state == null) {
 			return;
