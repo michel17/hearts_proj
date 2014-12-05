@@ -22,9 +22,14 @@ public class HeartsMainActivity extends GameMainActivity {
 				return new HeartsHumanPlayer(name);
 			}
 		});
-		playerTypes.add(new GamePlayerType("Computer Player") {
+		playerTypes.add(new GamePlayerType("Computer Player (dumb)") {
 			public GamePlayer createPlayer(String name) {
-				return new HeartsComputerPlayer(name);
+				return new HeartsComputerPlayer(name,HeartsComputerPlayer.DUMB_AI);
+			}
+		});
+		playerTypes.add(new GamePlayerType("Computer Player (smart)") {
+			public GamePlayer createPlayer(String name) {
+				return new HeartsComputerPlayer(name,HeartsComputerPlayer.SMART_AI);
 			}
 		});
 		// Create a game configuration class for Hearts
@@ -44,10 +49,9 @@ public class HeartsMainActivity extends GameMainActivity {
 		return defaultConfig;
 
 	}
-
+	
 	@Override
 	public LocalGame createLocalGame() {
 		return new HeartsLocalGame();
 	}
-
 }
