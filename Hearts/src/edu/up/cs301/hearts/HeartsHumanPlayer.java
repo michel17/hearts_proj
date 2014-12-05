@@ -30,6 +30,16 @@ import edu.up.cs301.game.infoMsg.GameInfo;
 import edu.up.cs301.game.infoMsg.IllegalMoveInfo;
 import edu.up.cs301.game.infoMsg.NotYourTurnInfo;
 
+/**
+ * HeartsHumanPlayer -
+ * 
+ * Object to represent a human player using the game. Contains information
+ * regarding creation of the gui along with general player information
+ * 
+ * @author Steven Lind, Kyle Michel, David Rodden
+ * @version 12/5/2014
+ *
+ */
 public class HeartsHumanPlayer extends GameHumanPlayer implements Animator {
 
 	// our game state
