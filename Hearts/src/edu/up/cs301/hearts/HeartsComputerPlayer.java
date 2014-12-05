@@ -15,9 +15,13 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 	ArrayList<Card> hand = new ArrayList<>();
 	int sleepsecs = 750;
 	boolean hasattemptedmove = false;
-
-	public HeartsComputerPlayer(String name) {
+	public static final int DUMB_AI = 0;
+	public static final int SMART_AI = 1;
+	private int aitype = 0;
+	
+	public HeartsComputerPlayer(String name, int type) {
 		super(name);
+		aitype = type;
 		getTimer().setInterval(50);
 		getTimer().start();
 	}
@@ -46,7 +50,12 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 					sleep(750);
 				}
 				if (state.getSubState() == HeartsState.PLAYING) {
-					game.sendAction(new HeartsPlayAction(this, dumbAI()));
+					if (aitype == DUMB_AI) {
+						game.sendAction(new HeartsPlayAction(this, dumbAI()));
+					}
+					else {
+						game.sendAction(new HeartsPlayAction(this, smartAI()));
+					}
 				}
 				else if (state.getSubState() == HeartsState.PASSING) {
 					game.sendAction(new HeartsPassAction(this, dumbPass()));
@@ -78,65 +87,63 @@ public class HeartsComputerPlayer extends GameComputerPlayer {
 		// But on any other turn it won't even get the chance to play
 
 		// randomly picks a card
-		ArrayList<Card> whiteList = new ArrayList<Card>();
-		Collections.copy(whiteList, hand);
-		Card currentCard = whiteList.get((int) (Math.random() * hand.size()));
+
 		// if it got here with ledsuit null, it skips it and just plays a
 		// random card
 		// But it can't get here when ledsuit isn't null to play on any
 		// other turn
-		while (currentCard.getSuit() == Suit.Heart
-				|| (currentCard.getSuit() != leadSuit && leadSuit != null)) {
-			if (state.isHeartsBroken()) {
-				break;
-			} else {
-				whiteList.remove(currentCard);
-				if (leadSuit == null) {
-					currentCard = hand.get((int) (Math.random() * whiteList
-							.size()));
-				} else {
-					Rank rank = Rank.ACE;
-					for (int i = 0; i < trick.length; i++) {
-						Rank tempRank = trick[i].getRank();
-						if (tempRank.value(14) < rank.value(14)) {
-							rank = tempRank;
-						}
-					}
-					Rank lowestRank = Rank.ACE;
-					Card lowestRankCard = null;
-					for (int i = 0; i < whiteList.size(); i++) {
-						Rank tempRank = whiteList.get(i).getRank();
-						if (tempRank.value(14) < lowestRank.value(14)) {
-							lowestRank = tempRank;
-							lowestRankCard = whiteList.get(i);
-						}
-					}
-					if (lowestRank.value(14) < rank.value(14)) {
-						ArrayList<Card> tempCards = new ArrayList<Card>();
-						for (int i = 0; i < whiteList.size(); i++) {
-							if (whiteList.get(i).getRank().value(14) < rank
-									.value(14)) {
-								tempCards.add(whiteList.get(i));
-							}
-						}
-						Rank highestRank = Rank.TWO;
-						Card highestRankCard = null;
-						for (int i = 0; i < tempCards.size(); i++) {
-							if (tempCards.get(i).getRank().value(14) > highestRank
-									.value(14)) {
-								highestRank = tempCards.get(i).getRank();
-								highestRankCard = tempCards.get(i);
-							}
-						}
-						currentCard = highestRankCard;
-					} else {
-						currentCard = lowestRankCard;
-					}
 
+		ArrayList<Card> suitHand = new ArrayList<Card>();
+		if (hand.isEmpty()) {
+			return null;
+		}
+		if (leadSuit != null) {
+			for (int i = 0; i < hand.size(); i++) {
+				if (hand.get(i).getSuit() == leadSuit) suitHand.add(hand.get(i));
+			}
+			if (suitHand.size() != 0) {
+				Card leastElement = null;
+				for (int i = 0; i < suitHand.size(); i++) {
+					if (leastElement == null) leastElement = suitHand.get(i);
+					if (suitHand.get(i).getRank().value(14) < leastElement.getRank().value(14))
+						leastElement = hand.get(i);
 				}
+				return leastElement;
+			}
+		} 
+		int heartCount = 0, spadeCount = 0, diamondCount = 0, clubCount = 0;
+		ArrayList<Suit> newSuit = new ArrayList<Suit>();
+		for(int i = 0; i < hand.size(); i++){
+			switch(hand.get(i).getSuit()){
+			case Heart:
+				heartCount++;
+				if(!newSuit.contains(Suit.Heart))	newSuit.add(Suit.Heart);
+				break;
+			case Spade:
+				spadeCount++;
+				if(!newSuit.contains(Suit.Spade))	newSuit.add(Suit.Spade);
+				break;
+			case Diamond:
+				diamondCount++;
+				if(!newSuit.contains(Suit.Diamond))	newSuit.add(Suit.Diamond);
+					break;
+			case Club:
+				clubCount++;
+				if(!newSuit.contains(Suit.Club))	newSuit.add(Suit.Club);
+				break;
 			}
 		}
-		return currentCard;
+		Suit chosenSuit = newSuit.get((int)(Math.random() * newSuit.size()));
+		for (int i = 0; i < hand.size(); i++) {
+			if (hand.get(i).getSuit() == chosenSuit) suitHand.add(hand.get(i));
+		}
+		Card leastElement = null;
+		for (int i = 0; i < suitHand.size(); i++) {
+			if (leastElement == null) leastElement = suitHand.get(i);
+			if (suitHand.get(i).getRank().value(14) < leastElement.getRank().value(14))
+				leastElement = hand.get(i);
+		}
+		return leastElement;
 	}
 
 	// We're going stone age basic. Try a random card and play it. Ignore
